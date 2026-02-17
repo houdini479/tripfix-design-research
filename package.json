@@ -1,0 +1,12 @@
+{
+  "name": "tripfix-design-research",
+  "version": "1.0.0",
+  "description": "Interactive web presentation of TripFix HITL AI UX design research",
+  "scripts": {
+    "start": "npx serve -s . -l $PORT",
+    "dev": "npx serve -s . -l 8080"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
