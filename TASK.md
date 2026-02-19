@@ -18,6 +18,17 @@
 - Labelbox has interactive Arcade.software demos that can be linked directly
 - Some product screenshots are not directly embeddable (CDN restrictions) — used graceful fallback with `onerror` handlers
 
+### 2026-02-19 — Claim History & Citation Popups
+- [x] Merge Evidence, AI Reasoning, and Audit Trail into unified "Claim History" section (Section 6)
+- [x] Add visual Claim History timeline mockup with colour-coded event types
+- [x] Update Review Triad right panel to reference Claim History
+- [x] Update sidebar navigation (Governance → Claim History)
+- [x] Cross-reference Claim History from Section 5.2 Reasoning Trails
+- [x] Implement NotebookLM-style citation system with numbered badges
+- [x] Add 18 citation badges at key factual claims throughout the report
+- [x] Build hover popup system showing source excerpts and document references
+- [x] Citation popup with smooth positioning, viewport awareness, and hover persistence
+
 ## Future Improvements
 - [ ] Add dark/light theme toggle
 - [ ] Add search functionality across report content
