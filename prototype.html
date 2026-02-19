@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TripFix — UX Prototype</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="prototype-styles.css">
+</head>
+<body>
+
+<!-- Top Bar -->
+<header class="topbar">
+    <div class="topbar-left">
+        <div class="topbar-brand">TripFix</div>
+        <span class="topbar-badge">Review Workbench</span>
+    </div>
+    <nav class="topbar-nav">
+        <button class="topbar-tab active" data-view="dashboard">Dashboard</button>
+        <button class="topbar-tab" data-view="review">Claim Review</button>
+    </nav>
+    <div class="topbar-right">
+        <div class="topbar-stat">
+            <span class="stat-label">STP Rate</span>
+            <span class="stat-value stat-green">73%</span>
+        </div>
+        <div class="topbar-stat">
+            <span class="stat-label">Queue</span>
+            <span class="stat-value">14</span>
+        </div>
+        <div class="topbar-user">JM</div>
+        <a href="index.html" class="topbar-back" title="Back to landing page">← Home</a>
+    </div>
+</header>
+
+<!-- ═══════ DASHBOARD VIEW ═══════ -->
+<main class="view-dashboard active" id="view-dashboard">
+    <div class="dash-grid">
+        <!-- Action Zone -->
+        <section class="dash-zone zone-action">
+            <div class="zone-header">
+                <h2><span class="zone-dot dot-red"></span> Needs Your Attention</h2>
+                <span class="zone-count">6 claims</span>
+            </div>
+            <div class="queue-list" id="actionQueue">
+                <div class="queue-item priority-high" data-claim="4829">
+                    <div class="qi-priority">!</div>
+                    <div class="qi-body">
+                        <div class="qi-title">#TF-2026-4829 · Martinez</div>
+                        <div class="qi-sub">EU261 delay · YYZ→LHR · 3 pax</div>
+                    </div>
+                    <div class="qi-meta">
+                        <span class="conf-chip conf-high">94%</span>
+                        <span class="qi-tier tier-2">Tier 2</span>
+                    </div>
+                </div>
+                <div class="queue-item priority-high" data-claim="4831">
+                    <div class="qi-priority">!</div>
+                    <div class="qi-body">
+                        <div class="qi-title">#TF-2026-4831 · Andersen</div>
+                        <div class="qi-sub">EU261 cancellation · CPH→BCN · 1 pax</div>
+                    </div>
+                    <div class="qi-meta">
+                        <span class="conf-chip conf-med">71%</span>
+                        <span class="qi-tier tier-3">Tier 3</span>
+                    </div>
+                </div>
+                <div class="queue-item priority-med" data-claim="4833">
+                    <div class="qi-priority">⚡</div>
+                    <div class="qi-body">
+                        <div class="qi-title">#TF-2026-4833 · Nakamura</div>
+                        <div class="qi-sub">UK261 delay · LHR→NRT · 2 pax</div>
+                    </div>
+                    <div class="qi-meta">
+                        <span class="conf-chip conf-high">88%</span>
+                        <span class="qi-tier tier-2">Tier 2</span>
+                    </div>
+                </div>
+                <div class="queue-item priority-med" data-claim="4835">
+                    <div class="qi-priority">⚡</div>
+                    <div class="qi-body">
+                        <div class="qi-title">#TF-2026-4835 · O'Brien</div>
+                        <div class="qi-sub">EU261 downgrade · DUB→JFK · 1 pax</div>
+                    </div>
+                    <div class="qi-meta">
+                        <span class="conf-chip conf-low">52%</span>
+                        <span class="qi-tier tier-3">Tier 3</span>
+                    </div>
+                </div>
+                <div class="queue-item priority-low" data-claim="4837">
+                    <div class="qi-priority">·</div>
+                    <div class="qi-body">
+                        <div class="qi-title">#TF-2026-4837 · Chen</div>
+                        <div class="qi-sub">EU261 delay · CDG→PVG · 2 pax</div>
+                    </div>
+                    <div class="qi-meta">
+                        <span class="conf-chip conf-high">91%</span>
+                        <span class="qi-tier tier-2">Tier 2</span>
+                    </div>
+                </div>
+                <div class="queue-item priority-low" data-claim="4839">
+                    <div class="qi-priority">·</div>
+                    <div class="qi-body">
+                        <div class="qi-title">#TF-2026-4839 · Petrov</div>
+                        <div class="qi-sub">EU261 delay · FRA→SVO · 1 pax</div>
+                    </div>
+                    <div class="qi-meta">
+                        <span class="conf-chip conf-high">96%</span>
+                        <span class="qi-tier tier-1">Tier 1</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Monitoring Zone -->
+        <section class="dash-zone zone-monitor">
+            <div class="zone-header">
+                <h2><span class="zone-dot dot-blue"></span> Pipeline Monitor</h2>
+            </div>
+            <div class="monitor-stats">
+                <div class="monitor-card">
+                    <div class="mc-value">247</div>
+                    <div class="mc-label">Claims Today</div>
+                    <div class="mc-trend trend-up">+12% vs last week</div>
+                </div>
+                <div class="monitor-card">
+                    <div class="mc-value stat-green">73%</div>
+                    <div class="mc-label">STP Rate</div>
+                    <div class="mc-trend trend-up">+3pp vs last month</div>
+                </div>
+                <div class="monitor-card">
+                    <div class="mc-value">4.2m</div>
+                    <div class="mc-label">Avg Review Time</div>
+                    <div class="mc-trend trend-down">-18% improvement</div>
+                </div>
+                <div class="monitor-card">
+                    <div class="mc-value stat-green">98.1%</div>
+                    <div class="mc-label">SLA Compliance</div>
+                    <div class="mc-trend trend-neutral">On target</div>
+                </div>
+            </div>
+            <div class="pipeline-visual">
+                <div class="pipe-stage">
+                    <div class="pipe-bar" style="--pct: 100%; --color: var(--blue);">
+                        <span>247 Intake</span>
+                    </div>
+                </div>
+                <div class="pipe-stage">
+                    <div class="pipe-bar" style="--pct: 73%; --color: var(--green);">
+                        <span>181 Auto-Resolved</span>
+                    </div>
+                </div>
+                <div class="pipe-stage">
+                    <div class="pipe-bar" style="--pct: 22%; --color: var(--yellow);">
+                        <span>52 In Review</span>
+                    </div>
+                </div>
+                <div class="pipe-stage">
+                    <div class="pipe-bar" style="--pct: 5%; --color: var(--red);">
+                        <span>14 Flagged</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Audit Zone -->
+        <section class="dash-zone zone-audit">
+            <div class="zone-header">
+                <h2><span class="zone-dot dot-green"></span> Recent Completions</h2>
+                <span class="zone-count">Showing 5 of 181</span>
+            </div>
+            <div class="audit-list">
+                <div class="audit-item">
+                    <span class="audit-id">#4828</span>
+                    <span class="audit-name">Kim · EU261 delay</span>
+                    <span class="conf-chip conf-high" style="font-size:10px;">Auto ✓</span>
+                    <span class="audit-time">2m ago</span>
+                </div>
+                <div class="audit-item">
+                    <span class="audit-id">#4827</span>
+                    <span class="audit-name">Dupont · EU261 delay</span>
+                    <span class="conf-chip conf-high" style="font-size:10px;">Auto ✓</span>
+                    <span class="audit-time">5m ago</span>
+                </div>
+                <div class="audit-item">
+                    <span class="audit-id">#4826</span>
+                    <span class="audit-name">Singh · UK261 cancel</span>
+                    <span class="conf-chip conf-med" style="font-size:10px;">Reviewed</span>
+                    <span class="audit-time">12m ago</span>
+                </div>
+                <div class="audit-item">
+                    <span class="audit-id">#4825</span>
+                    <span class="audit-name">Weber · EU261 delay</span>
+                    <span class="conf-chip conf-high" style="font-size:10px;">Auto ✓</span>
+                    <span class="audit-time">14m ago</span>
+                </div>
+                <div class="audit-item">
+                    <span class="audit-id">#4824</span>
+                    <span class="audit-name">Torres · EU261 delay</span>
+                    <span class="conf-chip conf-high" style="font-size:10px;">Auto ✓</span>
+                    <span class="audit-time">18m ago</span>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<!-- ═══════ REVIEW VIEW ═══════ -->
+<main class="view-review" id="view-review">
+    <div class="review-grid">
+        <!-- LEFT: Mini Queue -->
+        <aside class="review-queue">
+            <div class="rq-header">
+                <h3>Queue</h3>
+                <span class="rq-count">6</span>
+            </div>
+            <div class="rq-list" id="reviewQueue">
+                <div class="rq-item active" data-claim="4829">
+                    <div class="rq-dot dot-red"></div>
+                    <div>
+                        <div class="rq-title">#4829 · Martinez</div>
+                        <div class="rq-sub">EU261 delay · 94%</div>
+                    </div>
+                </div>
+                <div class="rq-item" data-claim="4831">
+                    <div class="rq-dot dot-yellow"></div>
+                    <div>
+                        <div class="rq-title">#4831 · Andersen</div>
+                        <div class="rq-sub">EU261 cancel · 71%</div>
+                    </div>
+                </div>
+                <div class="rq-item" data-claim="4833">
+                    <div class="rq-dot dot-blue"></div>
+                    <div>
+                        <div class="rq-title">#4833 · Nakamura</div>
+                        <div class="rq-sub">UK261 delay · 88%</div>
+                    </div>
+                </div>
+                <div class="rq-item" data-claim="4835">
+                    <div class="rq-dot dot-red"></div>
+                    <div>
+                        <div class="rq-title">#4835 · O'Brien</div>
+                        <div class="rq-sub">EU261 downgrade · 52%</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CENTER: Claim Review -->
+        <section class="review-center">
+            <div class="rc-header">
+                <div>
+                    <h2>Claim #TF-2026-4829</h2>
+                    <div class="rc-subtitle">A. Martinez · EU261 Flight Delay Compensation · 3 Passengers</div>
+                </div>
+                <div class="rc-badges">
+                    <span class="conf-chip conf-high">Overall: 94%</span>
+                    <span class="qi-tier tier-2">Tier 2 Review</span>
+                </div>
+            </div>
+
+            <!-- AI Summary -->
+            <div class="suggestion-block">
+                <div class="sb-header">
+                    <span class="sb-icon">🤖</span>
+                    <span class="sb-title">AI Eligibility Assessment</span>
+                    <span class="conf-chip conf-high">94%</span>
+                </div>
+                <div class="sb-body">
+                    <p>Passengers are <strong>eligible for compensation</strong> under EU Regulation 261/2004. Flight AC847 (YYZ→LHR) on 2026-01-15 was delayed by <strong>4 hours 22 minutes</strong>, exceeding the 3-hour threshold for long-haul flights. Compensation of <strong>€600 per passenger</strong> (€1,800 total) applies.</p>
+                </div>
+                <div class="sb-evidence">
+                    <div class="sb-evidence-label">Supporting Evidence</div>
+                    <div class="evidence-chips">
+                        <span class="ev-chip">📄 Boarding pass — OCR confirmed</span>
+                        <span class="ev-chip">📄 Booking confirmation — 3 pax</span>
+                        <span class="ev-chip">✈️ FlightAware API — 4h22m delay</span>
+                        <span class="ev-chip">📋 EU261 schedule — €600/pax</span>
+                    </div>
+                </div>
+                <div class="sb-actions">
+                    <button class="action-btn action-approve">✓ Approve</button>
+                    <button class="action-btn action-edit">✎ Edit</button>
+                    <button class="action-btn action-reject">✕ Reject</button>
+                    <button class="action-btn action-more">More Evidence</button>
+                </div>
+            </div>
+
+            <!-- Field-Level Suggestions -->
+            <div class="fields-section">
+                <h3>Extracted Fields</h3>
+                <div class="field-row">
+                    <div class="field-label">Passenger Name</div>
+                    <div class="field-value">A. Martinez, L. Martinez, C. Martinez</div>
+                    <span class="conf-chip conf-high" style="font-size:10px;">98%</span>
+                    <button class="field-action">✓</button>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Flight Number</div>
+                    <div class="field-value">AC847</div>
+                    <span class="conf-chip conf-high" style="font-size:10px;">99%</span>
+                    <button class="field-action">✓</button>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Route</div>
+                    <div class="field-value">Toronto Pearson (YYZ) → London Heathrow (LHR)</div>
+                    <span class="conf-chip conf-high" style="font-size:10px;">99%</span>
+                    <button class="field-action">✓</button>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Delay Duration</div>
+                    <div class="field-value">4 hours 22 minutes</div>
+                    <span class="conf-chip conf-high" style="font-size:10px;">96%</span>
+                    <button class="field-action">✓</button>
+                </div>
+                <div class="field-row highlight">
+                    <div class="field-label">Passenger Count</div>
+                    <div class="field-value"><s style="color:var(--red); opacity:0.5;">2</s> → 3 <span style="font-size:11px; color:var(--yellow);">(edited by J. Martinez)</span></div>
+                    <span class="conf-chip conf-med" style="font-size:10px;">72%</span>
+                    <button class="field-action edited">✎</button>
+                </div>
+                <div class="field-row">
+                    <div class="field-label">Compensation</div>
+                    <div class="field-value">€600 × 3 = <strong>€1,800</strong></div>
+                    <span class="conf-chip conf-high" style="font-size:10px;">94%</span>
+                    <button class="field-action">✓</button>
+                </div>
+            </div>
+
+            <!-- Draft Letter Preview -->
+            <div class="draft-section">
+                <div class="draft-header">
+                    <h3>Draft Demand Letter</h3>
+                    <span class="draft-version">v2 · Generated 14:28</span>
+                </div>
+                <div class="draft-preview">
+                    <p class="draft-line">Dear Air Canada Customer Relations,</p>
+                    <p class="draft-line">We write on behalf of our clients, <strong>A. Martinez, L. Martinez, and C. Martinez</strong>, regarding Flight <strong>AC847</strong> from Toronto Pearson (YYZ) to London Heathrow (LHR) scheduled for <strong>15 January 2026</strong>.</p>
+                    <p class="draft-line">The flight arrived at its final destination with a delay of <strong>4 hours and 22 minutes</strong>, exceeding the 3-hour threshold established under <strong>EU Regulation 261/2004, Article 7</strong> for flights exceeding 3,500 km.</p>
+                    <p class="draft-line">Accordingly, each passenger is entitled to compensation of <strong>€600</strong>, for a total claim of <strong>€1,800</strong>.</p>
+                    <p class="draft-line draft-fade">We request payment within 14 days of receipt of this letter…</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT: Claim History -->
+        <aside class="review-history">
+            <div class="rh-header">
+                <h3>Claim History</h3>
+            </div>
+            <div class="rh-legend">
+                <span class="rh-legend-item"><span class="rh-dot" style="background:var(--blue);"></span> Evidence</span>
+                <span class="rh-legend-item"><span class="rh-dot" style="background:var(--accent);"></span> AI</span>
+                <span class="rh-legend-item"><span class="rh-dot" style="background:var(--green);"></span> Human</span>
+                <span class="rh-legend-item"><span class="rh-dot" style="background:var(--yellow);"></span> System</span>
+            </div>
+            <div class="rh-timeline">
+                <div class="rh-event ev-human">
+                    <div class="rh-time">14:32</div>
+                    <div class="rh-content">
+                        <div class="rh-type">Approved</div>
+                        <div class="rh-desc"><strong>J. Martinez</strong> approved demand letter. "Compensation verified against EU261 schedule."</div>
+                    </div>
+                </div>
+                <div class="rh-event ev-ai">
+                    <div class="rh-time">14:28</div>
+                    <div class="rh-content">
+                        <div class="rh-type">Draft v2</div>
+                        <div class="rh-desc">Demand letter regenerated. Model: <code>claims-drafter-v3.1</code>. Conf: 91%. 4 citations.</div>
+                    </div>
+                </div>
+                <div class="rh-event ev-human">
+                    <div class="rh-time">14:15</div>
+                    <div class="rh-content">
+                        <div class="rh-type">Edit</div>
+                        <div class="rh-desc"><strong>J. Martinez</strong> corrected pax count 2→3. "Third passenger on booking p.2"</div>
+                    </div>
+                </div>
+                <div class="rh-event ev-ai">
+                    <div class="rh-time">13:42</div>
+                    <div class="rh-content">
+                        <div class="rh-type">Assessment</div>
+                        <div class="rh-desc">Eligible — EU261, >3hr delay. Conf: 94%. Flight data + API verified.</div>
+                    </div>
+                </div>
+                <div class="rh-event ev-system">
+                    <div class="rh-time">13:41</div>
+                    <div class="rh-content">
+                        <div class="rh-type">Routed</div>
+                        <div class="rh-desc">→ Tier 2 queue. Trigger: >€400 compensation per <code>P-2024-031</code>.</div>
+                    </div>
+                </div>
+                <div class="rh-event ev-evidence">
+                    <div class="rh-time">13:38</div>
+                    <div class="rh-content">
+                        <div class="rh-type">Boarding Pass</div>
+                        <div class="rh-desc">OCR: AC847, 2026-01-15, YYZ→LHR. Conf: 97%.</div>
+                    </div>
+                </div>
+                <div class="rh-event ev-evidence">
+                    <div class="rh-time">13:35</div>
+                    <div class="rh-content">
+                        <div class="rh-type">Booking Confirm</div>
+                        <div class="rh-desc">OCR: 3 pax, ref XN7842.</div>
+                    </div>
+                </div>
+                <div class="rh-event ev-ai">
+                    <div class="rh-time">13:35</div>
+                    <div class="rh-content">
+                        <div class="rh-type">Processing</div>
+                        <div class="rh-desc">Auto-intake started. Model: <code>claims-intake-v2.4</code>.</div>
+                    </div>
+                </div>
+                <div class="rh-event ev-system">
+                    <div class="rh-time">13:34</div>
+                    <div class="rh-content">
+                        <div class="rh-type">Created</div>
+                        <div class="rh-desc">Claim #TF-2026-4829 via web intake.</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</main>
+
+<!-- Prototype banner -->
+<div class="proto-banner">
+    <span>🎨 Interactive UX Prototype</span> · This is a design mockup demonstrating the TripFix review workbench concept.
+    <a href="research.html">Read the full design research →</a>
+</div>
+
+<script src="prototype-app.js"></script>
+
+</body>
+</html>

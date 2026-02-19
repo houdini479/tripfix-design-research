@@ -1,6 +1,6 @@
-# TripFix Design Research — Interactive Report
+# TripFix — Design Research & UX Prototype
 
-Interactive web presentation of the TripFix Human-in-the-Loop AI UX design research, combining two independent research analyses into a single navigable experience with embedded product demos and videos.
+Landing page with two experiences: comprehensive design research report and an interactive UX prototype of the TripFix claims review workbench.
 
 ## Quick Start (Local)
 
@@ -19,16 +19,35 @@ Then open [http://localhost:8080](http://localhost:8080)
 
 ## What's Included
 
-- `index.html` — Self-contained interactive report (no build step)
+### Pages
+- `index.html` — Landing page with navigation to both experiences
+- `research.html` — Interactive design research report (12 exemplars, 6 videos, pattern libraries)
+- `prototype.html` — UX prototype of the TripFix review workbench
+- `prototype-styles.css` — Styles for the prototype
+- `prototype-app.js` — Interactivity for the prototype
+
+### Source Documents
 - `TripFix_Design_Research.pdf` — Initial research report (14 pages)
 - `TripFix_HITL_Design_Research_Final.pdf` — Synthesized research report (16 pages)
-- `railway.json` — Railway deployment configuration
 
-## Features
+### Deployment
+- `railway.json` — Railway deployment configuration
+- `package.json` — Node.js config for static serving
+
+## Research Report Features
 
 - Fixed sidebar navigation with scroll-aware highlighting
 - 6 embedded YouTube product demo videos
 - Product cards for 12 cross-domain exemplars
-- Visual components: tier cards, confidence traffic lights, comparison tables, KPI grids
-- Downloadable source PDF reports from the top bar
-- Fully responsive layout
+- NotebookLM-style citation popups with source excerpts
+- Unified "Claim History" section with visual timeline mockup
+- Downloadable source PDF reports
+
+## UX Prototype Features
+
+- **Dashboard view**: Three-zone layout (Action / Monitor / Audit)
+- **Review workbench**: Three-pane triad (Queue / Claim Review / Claim History)
+- **Claim History timeline**: Unified evidence + AI reasoning + human actions
+- **Confidence indicators**: Field-level and claim-level confidence chips
+- **Interactive actions**: Approve/Edit/Reject with visual feedback
+- Responsive layout

@@ -29,6 +29,17 @@
 - [x] Build hover popup system showing source excerpts and document references
 - [x] Citation popup with smooth positioning, viewport awareness, and hover persistence
 
+### 2026-02-19 — Landing Page & UX Prototype
+- [x] Rename index.html to research.html
+- [x] Create landing page (index.html) with two cards: Research and Prototype
+- [x] Build UX prototype page with dashboard and review workbench views
+- [x] Dashboard: three-zone layout (Action queue, Pipeline monitor, Audit completions)
+- [x] Review workbench: three-pane triad (Queue, Claim Review, Claim History timeline)
+- [x] Interactive actions: approve/edit/reject with visual feedback
+- [x] Separate CSS and JS for prototype (prototype-styles.css, prototype-app.js)
+- [x] Update README, PLANNING.md with new architecture
+- [x] Push to GitHub for Railway deployment
+
 ## Future Improvements
 - [ ] Add dark/light theme toggle
 - [ ] Add search functionality across report content

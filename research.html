@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TripFix Design Research — Human-in-the-Loop AI UX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --surface-2: #1a1a26;
+            --surface-3: #222233;
+            --border: #2a2a3d;
+            --border-light: #353550;
+            --text: #e8e8f0;
+            --text-muted: #9494ad;
+            --text-dim: #6a6a82;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --accent-glow: rgba(99, 102, 241, 0.15);
+            --green: #22c55e;
+            --green-bg: rgba(34, 197, 94, 0.1);
+            --yellow: #eab308;
+            --yellow-bg: rgba(234, 179, 8, 0.1);
+            --red: #ef4444;
+            --red-bg: rgba(239, 68, 68, 0.1);
+            --blue: #3b82f6;
+            --blue-bg: rgba(59, 130, 246, 0.1);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --radius-lg: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        /* ─── Top Bar ─── */
+        .topbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            height: 64px;
+            display: flex; align-items: center; padding: 0 32px;
+        }
+        .topbar-brand {
+            font-weight: 700; font-size: 18px;
+            background: linear-gradient(135deg, var(--accent-light), #a78bfa);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .topbar-badge {
+            margin-left: 12px;
+            font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+            padding: 3px 10px; border-radius: 20px;
+            background: var(--accent-glow); color: var(--accent-light); border: 1px solid rgba(99,102,241,0.3);
+        }
+        .topbar-right {
+            margin-left: auto; display: flex; gap: 8px; align-items: center;
+        }
+        .topbar-tab {
+            padding: 6px 16px; border-radius: 8px; font-size: 13px; font-weight: 500;
+            color: var(--text-muted); cursor: pointer; border: 1px solid var(--border);
+            background: none; transition: all 0.2s; text-decoration: none;
+        }
+        .topbar-tab:hover { color: var(--text); background: var(--surface-2); border-color: var(--border-light); }
+
+        /* ─── Sidebar ─── */
+        .sidebar {
+            position: fixed; top: 64px; left: 0; bottom: 0;
+            width: 280px; background: var(--surface);
+            border-right: 1px solid var(--border);
+            overflow-y: auto; padding: 24px 0; z-index: 50;
+        }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+        .nav-section-label {
+            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+            color: var(--text-dim); padding: 16px 24px 8px; margin-top: 8px;
+        }
+        .nav-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 24px; font-size: 13px; color: var(--text-muted);
+            text-decoration: none; transition: all 0.2s; border-left: 2px solid transparent;
+        }
+        .nav-link:hover { color: var(--text); background: var(--surface-2); }
+        .nav-link.active {
+            color: var(--accent-light); background: var(--accent-glow);
+            border-left-color: var(--accent);
+        }
+        .nav-icon { font-size: 16px; width: 22px; text-align: center; flex-shrink: 0; }
+
+        /* ─── Main Content ─── */
+        .main {
+            margin-left: 280px; margin-top: 64px; padding: 48px 64px 120px;
+            max-width: 1100px;
+        }
+
+        /* ─── Hero ─── */
+        .hero {
+            padding: 64px 0 48px; border-bottom: 1px solid var(--border); margin-bottom: 56px;
+        }
+        .hero-overline {
+            font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em;
+            color: var(--accent-light); margin-bottom: 16px;
+        }
+        .hero h1 {
+            font-size: 42px; font-weight: 800; line-height: 1.15;
+            background: linear-gradient(135deg, #fff 30%, var(--accent-light));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+        .hero-subtitle {
+            font-size: 18px; color: var(--text-muted); line-height: 1.6; max-width: 680px;
+        }
+        .hero-meta {
+            display: flex; gap: 24px; margin-top: 24px; font-size: 13px; color: var(--text-dim);
+        }
+        .hero-meta span { display: flex; align-items: center; gap: 6px; }
+
+        /* ─── Sections ─── */
+        .section { margin-bottom: 72px; scroll-margin-top: 80px; }
+        .section-number {
+            font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase;
+            letter-spacing: 0.1em; margin-bottom: 8px;
+        }
+        .section h2 {
+            font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #fff;
+        }
+        .section-lead {
+            font-size: 16px; color: var(--text-muted); margin-bottom: 32px; max-width: 700px;
+        }
+        .section h3 {
+            font-size: 20px; font-weight: 600; margin: 36px 0 12px; color: #fff;
+        }
+        .section h4 {
+            font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: var(--text);
+        }
+        .section p { margin-bottom: 16px; color: var(--text-muted); }
+        .section ul, .section ol { margin: 12px 0 16px 20px; color: var(--text-muted); }
+        .section li { margin-bottom: 6px; }
+
+        /* ─── Key Insight Box ─── */
+        .insight-box {
+            background: var(--accent-glow); border: 1px solid rgba(99,102,241,0.25);
+            border-radius: var(--radius); padding: 20px 24px; margin: 24px 0;
+        }
+        .insight-box .insight-label {
+            font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--accent-light); margin-bottom: 8px;
+        }
+        .insight-box p { color: var(--text); margin-bottom: 0; }
+
+        /* ─── Product Card ─── */
+        .product-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); overflow: hidden; margin: 28px 0;
+            transition: border-color 0.3s;
+        }
+        .product-card:hover { border-color: var(--border-light); }
+        .product-card-header {
+            display: flex; align-items: center; gap: 16px;
+            padding: 20px 24px; border-bottom: 1px solid var(--border);
+        }
+        .product-card-logo {
+            width: 40px; height: 40px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; font-weight: 700; flex-shrink: 0;
+        }
+        .product-card-title { font-size: 17px; font-weight: 600; color: #fff; }
+        .product-card-subtitle { font-size: 13px; color: var(--text-muted); }
+        .product-card-links {
+            margin-left: auto; display: flex; gap: 8px;
+        }
+        .product-card-links a {
+            font-size: 12px; font-weight: 500; color: var(--accent-light);
+            text-decoration: none; padding: 4px 12px; border-radius: 6px;
+            border: 1px solid rgba(99,102,241,0.3); transition: all 0.2s;
+        }
+        .product-card-links a:hover {
+            background: var(--accent-glow); border-color: var(--accent);
+        }
+        .product-card-body { padding: 24px; }
+        .product-card-body p { font-size: 14px; }
+
+        /* ─── Video Embed ─── */
+        .video-embed {
+            position: relative; width: 100%; padding-top: 56.25%;
+            border-radius: var(--radius); overflow: hidden;
+            background: var(--surface-2); margin: 16px 0;
+        }
+        .video-embed iframe {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;
+        }
+        .video-caption {
+            font-size: 12px; color: var(--text-dim); margin-top: 8px; text-align: center;
+            font-style: italic;
+        }
+
+        /* ─── Image Embed ─── */
+        .image-embed {
+            border-radius: var(--radius); overflow: hidden; margin: 16px 0;
+            border: 1px solid var(--border); background: var(--surface-2);
+        }
+        .image-embed img {
+            width: 100%; height: auto; display: block;
+        }
+        .image-embed .image-caption {
+            padding: 10px 16px; font-size: 12px; color: var(--text-dim);
+            border-top: 1px solid var(--border); text-align: center;
+        }
+
+        /* ─── Tier Cards ─── */
+        .tier-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0;
+        }
+        .tier-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 20px; position: relative; overflow: hidden;
+        }
+        .tier-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+        }
+        .tier-card.tier-1::before { background: var(--green); }
+        .tier-card.tier-2::before { background: var(--yellow); }
+        .tier-card.tier-3::before { background: var(--red); }
+        .tier-label {
+            font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+        .tier-1 .tier-label { color: var(--green); }
+        .tier-2 .tier-label { color: var(--yellow); }
+        .tier-3 .tier-label { color: var(--red); }
+        .tier-card h4 { margin: 0 0 8px; font-size: 15px; }
+        .tier-card p { font-size: 13px; margin: 0; }
+
+        /* ─── Three-Zone Dashboard ─── */
+        .zone-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0;
+        }
+        .zone-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 20px;
+        }
+        .zone-card.action { border-top: 3px solid var(--red); }
+        .zone-card.monitor { border-top: 3px solid var(--blue); }
+        .zone-card.audit { border-top: 3px solid var(--green); }
+        .zone-card h4 { font-size: 15px; margin: 0 0 8px; }
+        .zone-card p { font-size: 13px; margin: 0; }
+
+        /* ─── Confidence Traffic Light ─── */
+        .confidence-demo {
+            display: flex; gap: 16px; margin: 24px 0;
+        }
+        .conf-item {
+            flex: 1; background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 16px; text-align: center;
+        }
+        .conf-dot {
+            width: 32px; height: 32px; border-radius: 50%; margin: 0 auto 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 700;
+        }
+        .conf-high .conf-dot { background: var(--green-bg); color: var(--green); border: 2px solid var(--green); }
+        .conf-med .conf-dot { background: var(--yellow-bg); color: var(--yellow); border: 2px solid var(--yellow); }
+        .conf-low .conf-dot { background: var(--red-bg); color: var(--red); border: 2px solid var(--red); }
+        .conf-label { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+        .conf-high .conf-label { color: var(--green); }
+        .conf-med .conf-label { color: var(--yellow); }
+        .conf-low .conf-label { color: var(--red); }
+        .conf-desc { font-size: 12px; color: var(--text-dim); }
+
+        /* ─── Review Triad Layout ─── */
+        .triad-grid {
+            display: grid; grid-template-columns: 200px 1fr 200px; gap: 12px; margin: 24px 0;
+        }
+        .triad-pane {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 16px;
+        }
+        .triad-pane h5 {
+            font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+            color: var(--accent-light); margin-bottom: 8px;
+        }
+        .triad-pane p { font-size: 12px; color: var(--text-dim); margin-bottom: 0; }
+
+        /* ─── Comparison Table ─── */
+        .comparison-table-wrapper {
+            overflow-x: auto; margin: 24px 0; border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        .comparison-table {
+            width: 100%; border-collapse: collapse; font-size: 13px;
+        }
+        .comparison-table thead { background: var(--surface-2); }
+        .comparison-table th {
+            padding: 12px 16px; text-align: left; font-weight: 600; color: var(--text);
+            border-bottom: 1px solid var(--border); white-space: nowrap;
+        }
+        .comparison-table td {
+            padding: 10px 16px; border-bottom: 1px solid var(--border); color: var(--text-muted);
+        }
+        .comparison-table tbody tr:hover { background: var(--surface); }
+        .comparison-table tbody tr:last-child td { border-bottom: none; }
+
+        /* ─── KPI Table ─── */
+        .kpi-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 24px 0;
+        }
+        .kpi-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 20px;
+        }
+        .kpi-card h4 { font-size: 14px; font-weight: 600; margin: 0 0 4px; color: #fff; }
+        .kpi-card .kpi-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+        .kpi-card .kpi-levers {
+            font-size: 12px; color: var(--text-dim);
+            padding-top: 10px; border-top: 1px solid var(--border);
+        }
+        .kpi-card .kpi-levers strong { color: var(--accent-light); font-weight: 500; }
+
+        /* ─── Resource Grid ─── */
+        .resource-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 24px 0;
+        }
+        .resource-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 20px;
+            text-decoration: none; transition: all 0.2s; display: block;
+        }
+        .resource-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .resource-card h4 { font-size: 14px; color: #fff; margin-bottom: 6px; }
+        .resource-card p { font-size: 12px; color: var(--text-dim); margin: 0; }
+        .resource-card .resource-url {
+            font-size: 11px; color: var(--accent-light); margin-top: 8px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ─── Timeline ─── */
+        .timeline { margin: 24px 0; }
+        .timeline-item {
+            display: flex; gap: 20px; padding: 16px 0;
+            border-left: 2px solid var(--border); margin-left: 8px; padding-left: 24px;
+            position: relative;
+        }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -6px; top: 20px;
+            width: 10px; height: 10px; border-radius: 50%;
+            background: var(--accent); border: 2px solid var(--bg);
+        }
+        .timeline-item h4 { font-size: 14px; color: #fff; margin: 0 0 4px; }
+        .timeline-item .timeline-date {
+            font-size: 12px; color: var(--accent-light); font-weight: 500; margin-bottom: 4px;
+        }
+        .timeline-item p { font-size: 13px; color: var(--text-muted); margin: 0; }
+
+        /* ─── Collapsible ─── */
+        .collapsible-trigger {
+            display: flex; align-items: center; gap: 8px; cursor: pointer;
+            padding: 12px 16px; background: var(--surface);
+            border: 1px solid var(--border); border-radius: var(--radius-sm);
+            font-size: 14px; font-weight: 500; color: var(--text);
+            transition: all 0.2s; margin: 8px 0; width: 100;
+        }
+        .collapsible-trigger:hover { background: var(--surface-2); }
+        .collapsible-trigger .arrow {
+            transition: transform 0.3s; font-size: 12px; color: var(--text-dim);
+        }
+        .collapsible-trigger.open .arrow { transform: rotate(90deg); }
+        .collapsible-content {
+            max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
+        }
+        .collapsible-content.open { max-height: 3000px; }
+        .collapsible-inner { padding: 16px 0; }
+
+        /* ─── Source Tags ─── */
+        .source-tag {
+            display: inline-flex; align-items: center; gap: 4px;
+            font-size: 11px; font-weight: 500; color: var(--text-dim);
+            background: var(--surface-2); padding: 2px 8px; border-radius: 4px;
+            margin: 0 2px; vertical-align: middle;
+        }
+        .source-tag.report-1 { color: var(--accent-light); background: var(--accent-glow); }
+        .source-tag.report-2 { color: #a78bfa; background: rgba(167, 139, 250, 0.1); }
+
+        /* ─── Citation System (NotebookLM-style) ─── */
+        .citation {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-width: 18px; height: 18px; border-radius: 4px; padding: 0 4px;
+            background: var(--accent-glow); color: var(--accent-light);
+            font-size: 10px; font-weight: 700; cursor: default;
+            margin: 0 1px; vertical-align: middle;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            transition: all 0.15s;
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1; user-select: none;
+        }
+        .citation:hover {
+            background: var(--accent); color: #fff;
+            border-color: var(--accent); transform: scale(1.1);
+        }
+
+        .citation-popup {
+            position: fixed; z-index: 1000; width: 400px; max-width: 90vw;
+            background: var(--surface-2);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04);
+            pointer-events: none; opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            overflow: hidden;
+        }
+        .citation-popup.visible {
+            opacity: 1; transform: translateY(0); pointer-events: auto;
+        }
+        .citation-popup-body {
+            padding: 16px 20px;
+            font-size: 13px; color: var(--text); line-height: 1.65;
+            border-left: 3px solid var(--accent);
+        }
+        .citation-popup-source {
+            padding: 10px 20px;
+            background: var(--surface-3);
+            border-top: 1px solid var(--border);
+            font-size: 11px; color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .citation-popup-source::before { content: '📄'; }
+
+        /* ─── Claim History Timeline ─── */
+        .claim-history-timeline {
+            margin: 24px 0; border-left: 2px solid var(--border); padding-left: 0;
+        }
+        .ch-event {
+            display: flex; gap: 16px;
+            padding: 14px 0 14px 24px;
+            position: relative;
+        }
+        .ch-event::before {
+            content: ''; position: absolute; left: -7px; top: 18px;
+            width: 12px; height: 12px; border-radius: 50%;
+            border: 2px solid var(--bg);
+        }
+        .ch-event.ev-evidence::before { background: var(--blue); }
+        .ch-event.ev-ai::before { background: var(--accent); }
+        .ch-event.ev-human::before { background: var(--green); }
+        .ch-event.ev-system::before { background: var(--yellow); }
+        .ch-event .ev-time {
+            font-size: 11px; color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+            min-width: 80px; flex-shrink: 0; padding-top: 1px;
+        }
+        .ch-event .ev-body { flex: 1; }
+        .ch-event .ev-type {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.08em; margin-bottom: 3px;
+        }
+        .ch-event.ev-evidence .ev-type { color: var(--blue); }
+        .ch-event.ev-ai .ev-type { color: var(--accent-light); }
+        .ch-event.ev-human .ev-type { color: var(--green); }
+        .ch-event.ev-system .ev-type { color: var(--yellow); }
+        .ch-event .ev-desc { font-size: 13px; color: var(--text-muted); }
+        .ch-event .ev-desc strong { color: var(--text); }
+
+        .ch-legend {
+            display: flex; gap: 20px; margin: 16px 0 8px; flex-wrap: wrap;
+        }
+        .ch-legend-item {
+            display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-dim);
+        }
+        .ch-legend-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 1024px) {
+            .sidebar { display: none; }
+            .main { margin-left: 0; padding: 32px 24px 80px; }
+            .tier-grid, .zone-grid { grid-template-columns: 1fr; }
+            .triad-grid { grid-template-columns: 1fr; }
+            .kpi-grid, .resource-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 28px; }
+        }
+
+        /* ─── Scroll progress ─── */
+        .scroll-progress {
+            position: fixed; top: 64px; left: 0; right: 0; height: 2px; z-index: 101;
+            background: transparent;
+        }
+        .scroll-progress-bar {
+            height: 100%; width: 0;
+            background: linear-gradient(90deg, var(--accent), #a78bfa);
+            transition: width 0.1s;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<header class="topbar">
+    <div class="topbar-brand">TripFix</div>
+    <span class="topbar-badge">Design Research</span>
+    <div class="topbar-right">
+        <a href="TripFix_Design_Research.pdf" download class="topbar-tab" title="Download initial research report (14 pages)">📄 Report 1 — Initial</a>
+        <a href="TripFix_HITL_Design_Research_Final.pdf" download class="topbar-tab" title="Download synthesized research report (16 pages)">📄 Report 2 — Synthesis</a>
+    </div>
+</header>
+<div class="scroll-progress"><div class="scroll-progress-bar" id="progressBar"></div></div>
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="nav-section-label">Overview</div>
+    <a href="#hero" class="nav-link active"><span class="nav-icon">◈</span> Executive Summary</a>
+
+    <div class="nav-section-label">Research Sections</div>
+    <a href="#operating-model" class="nav-link"><span class="nav-icon">1</span> Operating Model</a>
+    <a href="#workflow" class="nav-link"><span class="nav-icon">2</span> Workflow & AI Handoffs</a>
+    <a href="#dashboard" class="nav-link"><span class="nav-icon">3</span> Dashboard & Queue</a>
+    <a href="#review" class="nav-link"><span class="nav-icon">4</span> Review & Feedback UX</a>
+    <a href="#trust" class="nav-link"><span class="nav-icon">5</span> Trust & Transparency</a>
+    <a href="#claim-history" class="nav-link"><span class="nav-icon">6</span> Claim History</a>
+
+    <div class="nav-section-label">Analysis</div>
+    <a href="#exemplars" class="nav-link"><span class="nav-icon">◈</span> Product Exemplars</a>
+    <a href="#kpis" class="nav-link"><span class="nav-icon">◈</span> KPI Framework</a>
+    <a href="#resources" class="nav-link"><span class="nav-icon">◈</span> Pattern Libraries</a>
+    <a href="#roadmap" class="nav-link"><span class="nav-icon">◈</span> Implementation Roadmap</a>
+
+    <div class="nav-section-label">Product Deep-Dives</div>
+    <a href="#evenup" class="nav-link"><span class="nav-icon">→</span> EvenUp</a>
+    <a href="#harvey" class="nav-link"><span class="nav-icon">→</span> Harvey AI</a>
+    <a href="#copilot" class="nav-link"><span class="nav-icon">→</span> GitHub Copilot</a>
+    <a href="#labelbox" class="nav-link"><span class="nav-icon">→</span> Labelbox</a>
+    <a href="#clara" class="nav-link"><span class="nav-icon">→</span> CLARA Analytics</a>
+</nav>
+
+<!-- Main Content -->
+<main class="main">
+
+    <!-- ═══════ HERO ═══════ -->
+    <div class="hero" id="hero">
+        <div class="hero-overline">Design Research Report</div>
+        <h1>Human-in-the-Loop AI UX<br>for TripFix Claims Management</h1>
+        <p class="hero-subtitle">
+            Designing the next-generation paralegal experience where AI does the work and humans
+            ensure quality, defensibility, and continuous improvement. Synthesised from two independent research analyses.
+        </p>
+        <div class="hero-meta">
+            <span>📅 February 2026</span>
+            <span>📄 2 Research Reports</span>
+            <span>🏢 12 Product Exemplars</span>
+            <span>🎯 6 Design Domains</span>
+        </div>
+    </div>
+
+    <!-- ═══════ EXECUTIVE SUMMARY ═══════ -->
+    <div class="section" id="exec-summary">
+        <div class="section-number">Overview</div>
+        <h2>Executive Summary</h2>
+        <p class="section-lead">TripFix is transitioning from a paralegal-driven claims management tool to an AI-first platform. This is a fundamental shift: from the user as the worker to the user as the quality controller and strategic decision-maker.</p>
+
+        <div class="insight-box">
+            <div class="insight-label">Core Design Principle</div>
+            <p><strong>Verification-first design:</strong> The interface must make it cheap for a reviewer to answer: <em>"Is this correct, and can I prove it?"</em> Every AI recommendation should point to the exact evidence that supports it, and visibly flag when evidence is insufficient. <span class="citation" data-source="TripFix_HITL_Design_Research_Final.pdf — §1 Introduction" data-excerpt="The core design challenge: shifting from the user as the worker to the user as the quality controller. The interface must make verification cheap — every AI recommendation should point to the exact evidence that supports it.">8</span></p>
+        </div>
+
+        <p>This interactive report compiles research across <strong>legal technology, insurance claims automation, software development review tools, data labelling platforms, content moderation systems, cybersecurity, medical imaging, fraud detection,</strong> and <strong>emerging AI UX pattern libraries</strong>.</p>
+
+        <p>The research converges on six critical design domains, each explored in depth below with embedded product examples, videos, and design patterns that the team should study.</p>
+    </div>
+
+    <!-- ═══════ 1. OPERATING MODEL ═══════ -->
+    <div class="section" id="operating-model">
+        <div class="section-number">Section 1</div>
+        <h2>Operating Model & Design Constraints</h2>
+        <p class="section-lead">Before diving into interaction patterns, TripFix must reckon with the constraints that make legal claims work fundamentally different from generic AI-assisted workflows.</p>
+
+        <h3>1.1 The Reviewer Is Not Editing a Draft</h3>
+        <p>Reviewers are performing <strong>quality assurance under time pressure</strong> <span class="citation" data-source="TripFix_Design_Research.pdf — §1 Operating Model" data-excerpt="The reviewer is not editing a draft — they are performing quality assurance under time pressure, often creating an evidentiary record that must stand up to escalation, dispute, or audit.">9</span>, often creating an evidentiary record that must stand up to escalation, dispute, or audit. The UI must make it easy to:</p>
+        <ol>
+            <li>See what the AI did</li>
+            <li>Verify against source evidence</li>
+            <li>Correct efficiently</li>
+            <li>Justify and annotate decisions</li>
+            <li>Prove accountability through traceability</li>
+        </ol>
+
+        <h3>1.2 Regulatory & Professional Constraints</h3>
+        <ul>
+            <li><strong>Professional responsibility:</strong> Legal professionals remain accountable for work product (Law Society of Ontario, ABA, Canadian Bar Association) <span class="citation" data-source="TripFix_HITL_Design_Research_Final.pdf — §1 Operating Model" data-excerpt="Professional responsibility rules mean lawyers and paralegals remain personally accountable for work product even when AI generates it. Law Society of Ontario, ABA, and Canadian Bar Association guidelines all require meaningful human oversight of AI-generated legal work.">10</span></li>
+            <li><strong>Privacy frameworks:</strong> PIPEDA and GDPR impact how AI prompts, outputs, and audit logs are stored</li>
+            <li><strong>AI governance standards:</strong> NIST AI RMF, ISO 42001, EU AI Act push toward explicit risk mapping and measurable controls <span class="citation" data-source="TripFix_Design_Research.pdf — §1 Operating Model" data-excerpt="AI governance standards including NIST AI RMF, ISO 42001, and the EU AI Act push toward explicit risk mapping and measurable controls. These frameworks require documented evidence of human oversight in high-risk AI applications.">11</span></li>
+        </ul>
+
+        <h3>1.3 Participation Models: HITL, HOTL, and Hybrid</h3>
+        <p>TripFix needs a <strong>hybrid model</strong>: Human-in-the-Loop (HITL) for complex liability assessments and novel claim types, Human-over-the-Loop (HOTL) for routine data extraction and administrative filing. The system should clearly indicate which mode applies to each claim and why.</p>
+
+        <div class="insight-box">
+            <div class="insight-label">Design Implication</div>
+            <p>TripFix's UX must be <strong>configurable</strong>—policy rules, templates, routing thresholds, and audit settings—rather than hard-coded. Jurisdictions, claim volumes, SLAs, and evidence types will vary without requiring engineering changes.</p>
+        </div>
+    </div>
+
+    <!-- ═══════ 2. WORKFLOW ═══════ -->
+    <div class="section" id="workflow">
+        <div class="section-number">Section 2</div>
+        <h2>Workflow Automation & AI Handoffs</h2>
+        <p class="section-lead">When AI handles 80-90% of claims, the UX must shift from "here's your to-do list" to "here's what needs your expert judgment."</p>
+
+        <h3>2.1 Exception-Based Processing</h3>
+        <p>The dominant pattern across legal tech and claims automation is <strong>exception-based review</strong> <span class="citation" data-source="TripFix_Design_Research.pdf — §2 Workflow Automation" data-excerpt="The dominant pattern across legal tech and claims automation is exception-based review. AI handles the straightforward work end-to-end; humans focus on exceptions — claims that are ambiguous, high-risk, or where AI confidence is low.">12</span>. AI handles the straightforward work end-to-end; humans focus on exceptions—claims that are ambiguous, high-risk, or where AI confidence is low.</p>
+
+        <div class="insight-box">
+            <div class="insight-label">Key Insight — Straight-Through Processing (STP)</div>
+            <p>Modern insurance claims systems achieve <strong>65%+ STP rates</strong> <span class="citation" data-source="TripFix_HITL_Design_Research_Final.pdf — §2 Workflow Automation" data-excerpt="Modern insurance claims systems achieve 65%+ straight-through processing rates, meaning the majority of claims resolve without human intervention. CLARA Analytics and similar platforms demonstrate that intelligent triage can push STP even higher for routine claims.">13</span>, meaning the majority of claims resolve without human intervention. TripFix should target a tiered model: auto-resolved claims, flagged-for-review claims, and escalated-to-specialist claims.</p>
+        </div>
+
+        <h3>2.2 Tiered Autonomy Model</h3>
+        <p>The emerging best practice maps autonomy to confidence and risk, not applying uniform review depth to every claim:</p>
+
+        <div class="tier-grid">
+            <div class="tier-card tier-1">
+                <div class="tier-label">Tier 1 — Full Automation</div>
+                <h4>Auto-Complete</h4>
+                <p>Routine data extraction, deadline calculations, document formatting. Auto-completed with optional sampling QC.</p>
+            </div>
+            <div class="tier-card tier-2">
+                <div class="tier-label">Tier 2 — AI Draft + Spot Check</div>
+                <h4>Summary Review</h4>
+                <p>Standard claims where AI generates the full work product and a paralegal reviews a summary. Confirm facts, eligibility, and outbound comms.</p>
+            </div>
+            <div class="tier-card tier-3">
+                <div class="tier-label">Tier 3 — AI Assist + Full Review</div>
+                <h4>Expert Review</h4>
+                <p>Complex, high-value, or novel claims. AI provides evidence gathering and recommendations; paralegal works through full analysis. Senior lawyer sign-off required.</p>
+            </div>
+        </div>
+
+        <h3>2.3 Confidence-Based Routing</h3>
+        <p>Confidence must be <strong>operationalised as routing policy</strong>, not displayed as decoration. Thresholds at two layers:</p>
+        <ul>
+            <li><strong>Claim-level tier:</strong> Overall routing to auto-approve, needs-review, needs-senior-audit, or needs-compliance-attention</li>
+            <li><strong>Sub-task-level gates:</strong> Per extraction field, per legal rule application, per draft clause, per redaction decision</li>
+        </ul>
+
+        <div class="insight-box">
+            <div class="insight-label">Calibration Insight</div>
+            <p>Confidence is only useful if <strong>calibrated</strong>—a score of 0.9 should mean approximately 90% likely correct. Poorly calibrated confidence misleads reviewers. TripFix should implement reliability diagrams and recalibrate after major model updates.</p>
+        </div>
+
+        <!-- ── EvenUp Product Card ── -->
+        <div id="evenup"></div>
+        <div class="product-card">
+            <div class="product-card-header">
+                <div class="product-card-logo" style="background: linear-gradient(135deg, #2563eb, #7c3aed); color: white;">E</div>
+                <div>
+                    <div class="product-card-title">EvenUp — Claims Intelligence Platform</div>
+                    <div class="product-card-subtitle">Closest analog to TripFix in legal AI</div>
+                </div>
+                <div class="product-card-links">
+                    <a href="https://www.evenuplaw.com" target="_blank">Website ↗</a>
+                    <a href="https://www.evenuplaw.com/blog/express-demands-announcement" target="_blank">Blog ↗</a>
+                </div>
+            </div>
+            <div class="product-card-body">
+                <p>EvenUp evolved from single-purpose demand letters to full lifecycle claims AI. Their platform is the closest production analog to TripFix's vision. Key patterns to study:</p>
+                <ul>
+                    <li><strong>Smart Workflows</strong> auto-detect when treatment is complete and trigger the next stage, reducing 100+ day delays</li>
+                    <li><strong>AI Drafts Suite</strong> generates documents across all case stages (demands, complaints, medical summaries)</li>
+                    <li><strong>Case Companion</strong> lets staff query case files conversationally during review</li>
+                    <li><strong>AI Playbooks</strong> automatically extract key insights when new documents are uploaded</li>
+                </ul>
+
+                <h4>Case Companion Demo</h4>
+                <div class="video-embed">
+                    <iframe src="https://www.youtube-nocookie.com/embed/m6YhOzrZcyI?rel=0" title="EvenUp Case Companion" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                </div>
+                <div class="video-caption">EvenUp Case Companion — AI assistant for querying case files during review</div>
+
+                <h4>Claims Intelligence Platform Overview</h4>
+                <div class="video-embed">
+                    <iframe src="https://www.youtube-nocookie.com/embed/cNJDl4AY3JU?rel=0" title="EvenUp Claims Intelligence" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                </div>
+                <div class="video-caption">EvenUp Claims Intelligence Platform — Full lifecycle claims management</div>
+            </div>
+        </div>
+
+        <!-- ── Harvey AI Product Card ── -->
+        <div id="harvey"></div>
+        <div class="product-card">
+            <div class="product-card-header">
+                <div class="product-card-logo" style="background: linear-gradient(135deg, #000, #333); color: white;">H</div>
+                <div>
+                    <div class="product-card-title">Harvey AI — Unified Legal AI Platform</div>
+                    <div class="product-card-subtitle">Leading legal AI with Workflow Builder & Paper Trail design</div>
+                </div>
+                <div class="product-card-links">
+                    <a href="https://www.harvey.ai" target="_blank">Website ↗</a>
+                    <a href="https://www.harvey.ai/blog/introducing-workflow-builder" target="_blank">Workflow Builder ↗</a>
+                    <a href="https://www.harvey.ai/resources/videos" target="_blank">Videos ↗</a>
+                </div>
+            </div>
+            <div class="product-card-body">
+                <p>Harvey recently unified their interface so lawyers never switch between drafting, research, and review tools. Their design philosophy centers on making AI reasoning visible through paper trails, citations, and logic chains.</p>
+                <ul>
+                    <li><strong>Workflow Builder:</strong> Self-serve tool for encoding proprietary expertise into reusable AI workflows without code</li>
+                    <li><strong>Unified Interface:</strong> Single intelligent interface routing queries to best data source, workflow, or product surface</li>
+                    <li><strong>Vault:</strong> Secure document storage, organization, and bulk analysis</li>
+                    <li><strong>Paper Trail Design:</strong> Every AI output includes thinking steps, citations, and logic chains for backtracking</li>
+                </ul>
+
+                <div class="insight-box">
+                    <div class="insight-label">Design Takeaway for TripFix</div>
+                    <p>Harvey's unified workspace concept suggests TripFix should create a <strong>single view</strong> where a paralegal can see the claim, the AI's work product, the evidence chain, and the decision rationale all together—no tab-switching.</p>
+                </div>
+
+                <h4>Explore Harvey's Workflow Builder</h4>
+                <p>Harvey's Workflow Builder allows legal teams to design and deploy customizable workflows. Visit their <a href="https://www.harvey.ai/resources/videos/workflow-builder-tour" target="_blank" style="color: var(--accent-light);">Workflow Builder Tour video</a> for a detailed walkthrough of the no-code builder interface.</p>
+                <div class="image-embed">
+                    <img src="https://cdn.prod.website-files.com/65c2322e92090b43c440b52b/68610316f1abea7f4e5f5f3e_Introducing%20Workflow%20Builder-p-1080.avif" alt="Harvey AI Workflow Builder interface" loading="lazy" onerror="this.parentElement.style.display='none'">
+                    <div class="image-caption">Harvey AI Workflow Builder — No-code interface for building legal AI workflows</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── GitHub Copilot Product Card ── -->
+        <div id="copilot"></div>
+        <div class="product-card">
+            <div class="product-card-header">
+                <div class="product-card-logo" style="background: linear-gradient(135deg, #1a1a2e, #0d1117); color: white;">⌘</div>
+                <div>
+                    <div class="product-card-title">GitHub Copilot — Mission Control & Code Review</div>
+                    <div class="product-card-subtitle">Best-in-class human review of AI work</div>
+                </div>
+                <div class="product-card-links">
+                    <a href="https://github.blog/ai-and-ml/github-copilot/how-to-orchestrate-agents-using-mission-control/" target="_blank">Blog ↗</a>
+                    <a href="https://docs.github.com/en/copilot" target="_blank">Docs ↗</a>
+                </div>
+            </div>
+            <div class="product-card-body">
+                <p>GitHub's Copilot coding agent introduced a "Mission Control" pattern that centralises the assignment, steering, and tracking of AI agent tasks. This is a powerful analogy for TripFix's review model.</p>
+                <ul>
+                    <li><strong>Mission Control:</strong> Centralised view for task assignment, progress tracking, and real-time steering</li>
+                    <li><strong>Code Review:</strong> Combines LLM analysis with deterministic rule engines for multi-layered review</li>
+                    <li><strong>Inline Feedback:</strong> Suggestions can be applied with one click or routed back to AI for auto-fix</li>
+                    <li><strong>Confidence Scores:</strong> Added Nov 2025 — rationale on every review suggestion</li>
+                </ul>
+
+                <h4>Agent HQ Mission Control — Introduction</h4>
+                <div class="video-embed">
+                    <iframe src="https://www.youtube-nocookie.com/embed/KniyIrpTDE8?rel=0" title="GitHub Copilot Mission Control" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                </div>
+                <div class="video-caption">GitHub Agent HQ — Unified command center for managing AI coding agent tasks</div>
+
+                <h4>How the Copilot Coding Agent Works</h4>
+                <div class="video-embed">
+                    <iframe src="https://www.youtube-nocookie.com/embed/1GVBRhDI5No?rel=0" title="GitHub Copilot Coding Agent" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                </div>
+                <div class="video-caption">GitHub Copilot Coding Agent — End-to-end agent workflow with human review</div>
+
+                <h4>What's New with the Copilot Coding Agent</h4>
+                <div class="video-embed">
+                    <iframe src="https://www.youtube-nocookie.com/embed/t4ERV6aHCPM?rel=0" title="Copilot Agent Updates" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                </div>
+                <div class="video-caption">Copilot agent updates — Including the Agents panel, browser capabilities, and mission control</div>
+            </div>
+        </div>
+
+        <!-- ── Labelbox Product Card ── -->
+        <div id="labelbox"></div>
+        <div class="product-card">
+            <div class="product-card-header">
+                <div class="product-card-logo" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white;">L</div>
+                <div>
+                    <div class="product-card-title">Labelbox — Multi-Step Workflow Editor</div>
+                    <div class="product-card-subtitle">Node-based visual review pipeline design</div>
+                </div>
+                <div class="product-card-links">
+                    <a href="https://labelbox.com" target="_blank">Website ↗</a>
+                    <a href="https://labelbox.com/blog/new-interactive-labelbox-workflow-experience-for-multi-step-reviews" target="_blank">Blog ↗</a>
+                    <a href="https://docs.labelbox.com/docs/workflows" target="_blank">Docs ↗</a>
+                </div>
+            </div>
+            <div class="product-card-body">
+                <p>Labelbox offers a powerful analogy for TripFix's workflow design with their graphical node-based workflow editor for multi-step review pipelines.</p>
+                <ul>
+                    <li><strong>Node-Based Visual Editor:</strong> Flowchart-style interface for designing data quality pipelines</li>
+                    <li><strong>AutoQA Nodes:</strong> LLMs automatically check outputs before they reach human reviewers</li>
+                    <li><strong>Conditional Routing:</strong> Route items through different paths based on confidence scores</li>
+                    <li><strong>Approve/Reject with Feedback:</strong> Mandatory comments on rejection become training data</li>
+                    <li><strong>Consensus Review:</strong> Multiple reviewers evaluate the same item for high-stakes decisions</li>
+                </ul>
+
+                <div class="image-embed">
+                    <img src="https://labelbox.com/static/37c3f1d5a3dc3d2b3f1e3b6b3e3f3a3b/workflow-editor-hero.png" alt="Labelbox Workflow Editor" loading="lazy" onerror="this.parentElement.style.display='none'">
+                    <div class="image-caption">Labelbox Workflow Editor — Node-based visual pipeline for multi-step review</div>
+                </div>
+
+                <p>Try Labelbox's <a href="https://app.arcade.software/share/mhhuw5rrCEijyTQyhqNo" target="_blank" style="color: var(--accent-light);">interactive workflow demo ↗</a> to see the node-based editor in action, and their <a href="https://app.arcade.software/share/TWwtbHlOjzdHQEDKH134" target="_blank" style="color: var(--accent-light);">filter logic demo ↗</a> for routing configuration.</p>
+
+                <div class="insight-box">
+                    <div class="insight-label">Design Takeaway for TripFix</div>
+                    <p>A similar visual workflow builder could let legal managers configure which claims go through which review steps based on claim value, complexity, or AI confidence thresholds—without engineering involvement.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════ 3. DASHBOARD ═══════ -->
+    <div class="section" id="dashboard">
+        <div class="section-number">Section 3</div>
+        <h2>Dashboard & Queue Design</h2>
+        <p class="section-lead">When the paralegal's primary role shifts to reviewing AI work, the dashboard becomes a command centre. It must answer three questions: What needs my attention? How is the system performing? Are there patterns I should know about?</p>
+
+        <h3>3.1 Three-Zone Dashboard</h3>
+        <p>Based on the research, TripFix's dashboard should be organised into three zones:</p>
+
+        <div class="zone-grid">
+            <div class="zone-card action">
+                <h4>🔴 Action Zone</h4>
+                <p>Claims needing human judgment <strong>now</strong>. Sorted by urgency and impact. Displays AI confidence, specific flag reason, and estimated review time. Supports bulk selection.</p>
+            </div>
+            <div class="zone-card monitor">
+                <h4>🔵 Monitoring Zone</h4>
+                <p>Real-time pipeline overview. Claims being processed, completion rates, average confidence, STP rate trends, and SLA status. The ops manager's primary view.</p>
+            </div>
+            <div class="zone-card audit">
+                <h4>🟢 Audit Zone</h4>
+                <p>Searchable history of all completed claims—both auto-resolved and human-reviewed—for compliance review, QC sampling, and pattern analysis.</p>
+            </div>
+        </div>
+
+        <h3>3.2 Agent Oversight Patterns</h3>
+        <p>UX researcher B.P. Rigent documented seven patterns for human oversight of ambient AI agents. Three are directly applicable to TripFix:</p>
+        <ul>
+            <li><strong>Overview Panel:</strong> Real-time agent status (idle, running, paused, needs attention) at a glance</li>
+            <li><strong>Oversight Flow:</strong> How humans resolve tasks requiring attention through approve/reject/modify workflows</li>
+            <li><strong>Event Stream Configuration:</strong> Customisable triggers for what requires human involvement vs. auto-resolves</li>
+        </ul>
+
+        <h3>3.3 Smart Triage & Prioritisation</h3>
+        <p>The queue should be intelligently prioritised, not a flat chronological list. Key patterns:</p>
+        <ul>
+            <li><strong>Complexity indicators:</strong> Each claim displays classification (simple/medium/complex), confidence level, estimated review time, and specific flags</li>
+            <li><strong>Turn-based attention cues:</strong> Clear "what requires my attention next" signals prevent dashboard thrash (documented in Gerrit Code Review's attention set pattern)</li>
+            <li><strong>Policy-based routing:</strong> Route by privilege indicators, novel jurisdiction, high monetary value, contradictory evidence, or compliance flags</li>
+        </ul>
+
+        <!-- ── CLARA Analytics ── -->
+        <div id="clara"></div>
+        <div class="product-card">
+            <div class="product-card-header">
+                <div class="product-card-logo" style="background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white;">C</div>
+                <div>
+                    <div class="product-card-title">CLARA Analytics — CLARAty.ai</div>
+                    <div class="product-card-subtitle">AI-driven claims intelligence for insurance</div>
+                </div>
+                <div class="product-card-links">
+                    <a href="https://claraanalytics.com" target="_blank">Website ↗</a>
+                    <a href="https://claraanalytics.com/platform-products/" target="_blank">Platform ↗</a>
+                </div>
+            </div>
+            <div class="product-card-body">
+                <p>CLARA Analytics exemplifies smart triage for claims management. Their platform doesn't just present claims—it presents <strong>claims with recommendations</strong>.</p>
+                <ul>
+                    <li><strong>Claims Document Intelligence Pro:</strong> Automatically scans and analyses claim documents with AI alerts</li>
+                    <li><strong>Triage Module:</strong> Predicts claim severity early to lower indemnity days</li>
+                    <li><strong>Alert-Based Dashboard:</strong> Surfaces actionable insights, not raw data</li>
+                    <li><strong>Performance Monitoring:</strong> Claim volumes, processing times, resolution rates</li>
+                </ul>
+
+                <div class="insight-box">
+                    <div class="insight-label">Design Takeaway for TripFix</div>
+                    <p>CLARA's key design insight: each flagged item comes with context about <strong>why it was flagged</strong> and <strong>what action the AI suggests</strong>. TripFix should adopt this pattern—never show a flag without a recommendation.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════ 4. REVIEW & FEEDBACK UX ═══════ -->
+    <div class="section" id="review">
+        <div class="section-number">Section 4</div>
+        <h2>Review & Feedback UX</h2>
+        <p class="section-lead">The review experience is where quality and efficiency intersect. The UX must enable expert-level review while silently capturing feedback that improves AI performance.</p>
+
+        <h3>4.1 The Review Triad Layout</h3>
+        <p>A high-throughput review workbench should consistently present three regions:</p>
+
+        <div class="triad-grid">
+            <div class="triad-pane">
+                <h5>Queue + Triage (Left)</h5>
+                <p>"What should I do next?" with filters, risk tiers, and attention signals.</p>
+            </div>
+            <div class="triad-pane" style="border-color: var(--accent);">
+                <h5>Claim Narrative + Decisions (Centre)</h5>
+                <p>AI summary with citations, editable eligibility decision, compensation inputs, draft letter in diff view, and action buttons: Approve / Request Changes / Escalate / Defer.</p>
+            </div>
+            <div class="triad-pane">
+                <h5>Claim History (Right)</h5>
+                <p>Unified timeline of all evidence, AI reasoning, and human actions. Every event in the claim's lifecycle — one scrollable, searchable, source-linked view.</p>
+            </div>
+        </div>
+
+        <p style="margin-top: 12px;"><strong>Ergonomic rule:</strong> Keep the default view "just enough to decide" but allow deep dives without leaving the page (progressive disclosure).</p>
+
+        <h3>4.2 Structured Suggestion Blocks</h3>
+        <p>Rather than free-form AI text, each suggestion should be a structured block containing:</p>
+        <ul>
+            <li>Proposed value with confidence indicator</li>
+            <li>Evidence links supporting the value</li>
+            <li>One-click actions: <strong>Accept</strong>, <strong>Edit</strong>, <strong>Reject</strong>, <strong>Needs More Evidence</strong></li>
+            <li>Reject requires a reason code (fast dropdown + optional comment) to feed analytics</li>
+        </ul>
+
+        <h3>4.3 Approval Grammar</h3>
+        <p>Adopt a <strong>two-state approval model</strong> borrowed from code review:</p>
+        <ul>
+            <li><strong>Approve:</strong> "I affirm this artefact meets standard."</li>
+            <li><strong>Request Changes:</strong> "AI output is directionally correct but needs edits before approval."</li>
+        </ul>
+        <p>Approvals should be <strong>scoped</strong>: reviewers may approve "fact extraction" but require a senior lawyer for "final demand letter wording." Multi-step approvals without full re-review.</p>
+
+        <h3>4.4 Batch Processing with Guardrails</h3>
+        <p>Batch review minimises human cost per claim—if coupled with guardrails:</p>
+        <ul>
+            <li><strong>Queue segmenting:</strong> Group by confidence bands and policy rules</li>
+            <li><strong>Bulk actions:</strong> "Approve selected," "Apply template," "Escalate selected," plus "Undo last bulk" and "Preview impact"</li>
+            <li><strong>Built-in spot-checking:</strong> "Approve 50 claims, sample 5 to verify first." Ops manager controls sampling rate by risk tier.</li>
+        </ul>
+
+        <h3>4.5 Passive Feedback Collection</h3>
+        <p>The most effective feedback systems are <strong>built into the workflow</strong>, not bolted on <span class="citation" data-source="TripFix_HITL_Design_Research_Final.pdf — §4 Review & Feedback UX" data-excerpt="The most effective feedback systems are built into the workflow, not bolted on. The paralegal never thinks about 'training the AI.' They're doing their job, and the system captures the signal. This is how EvenUp, Labelbox, and GitHub Copilot all approach feedback.">15</span>:</p>
+
+        <div class="confidence-demo">
+            <div class="conf-item conf-high">
+                <div class="conf-dot">✓</div>
+                <div class="conf-label">Accept</div>
+                <div class="conf-desc">Positive reinforcement signal</div>
+            </div>
+            <div class="conf-item conf-med">
+                <div class="conf-dot">✎</div>
+                <div class="conf-label">Edit</div>
+                <div class="conf-desc">Diff becomes training data</div>
+            </div>
+            <div class="conf-item conf-low">
+                <div class="conf-dot">✕</div>
+                <div class="conf-label">Reject + Comment</div>
+                <div class="conf-desc">Explicit correction with reason code</div>
+            </div>
+        </div>
+
+        <p>The paralegal <strong>never thinks about "training the AI."</strong> They're doing their job, and the system captures the signal. This is how EvenUp, Labelbox, and GitHub Copilot all approach feedback.</p>
+
+        <div class="insight-box">
+            <div class="insight-label">Cross-Industry Insight — HackerOne's "Shadowing" Model</div>
+            <p>In cybersecurity code review, AI agents "shadow" human experts as they work, creating long-term memories about architecture, institutional knowledge, and team policies. Over time, the AI replicates expert judgment patterns. For TripFix, the system should learn airline-specific patterns, jurisdictional idiosyncrasies, and firm-level preferences from reviewer corrections.</p>
+        </div>
+
+        <h4>GitHub Copilot — End-to-End Agentic Development (Review Workflow)</h4>
+        <div class="video-embed">
+            <iframe src="https://www.youtube-nocookie.com/embed/onVn-lnHZ9s?rel=0" title="End-to-End Agentic Development" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="video-caption">End-to-end agentic development with GitHub Copilot — Demonstrates the review and feedback workflow</div>
+    </div>
+
+    <!-- ═══════ 5. TRUST & TRANSPARENCY ═══════ -->
+    <div class="section" id="trust">
+        <div class="section-number">Section 5</div>
+        <h2>Trust, Transparency & Explainability</h2>
+        <p class="section-lead">If paralegals don't trust the AI, they over-review everything (defeating efficiency). If they over-trust, quality drops. The goal is <strong>calibrated trust</strong>. <span class="citation" data-source="TripFix_HITL_Design_Research_Final.pdf — §5 Trust & Transparency" data-excerpt="The goal is calibrated trust. If paralegals don't trust the AI, they over-review everything, defeating the efficiency gains. If they over-trust, quality drops and errors slip through. Confidence presentations should be tested for their impact on reviewer accuracy, not assumed.">14</span></p>
+
+        <h3>5.1 Confidence Visualisation — Traffic Light Model</h3>
+        <p>Present confidence as a chip with tooltip including calibration note, top factors/evidence links, and risk tier:</p>
+
+        <div class="confidence-demo">
+            <div class="conf-item conf-high">
+                <div class="conf-dot">85+</div>
+                <div class="conf-label">High Confidence</div>
+                <div class="conf-desc">Output likely correct. Minimal review required.</div>
+            </div>
+            <div class="conf-item conf-med">
+                <div class="conf-dot">60+</div>
+                <div class="conf-label">Medium Confidence</div>
+                <div class="conf-desc">Subtly prompts human review. Check flagged fields.</div>
+            </div>
+            <div class="conf-item conf-low">
+                <div class="conf-dot">&lt;60</div>
+                <div class="conf-label">Low Confidence</div>
+                <div class="conf-desc">Demands human action. AI should abstain and defer.</div>
+            </div>
+        </div>
+
+        <p>For TripFix, show confidence at <strong>multiple levels</strong>: per-field (e.g., "passenger name: 98%" vs. "compensation amount: 72%"), per-section, and per-claim overall.</p>
+
+        <div class="insight-box">
+            <div class="insight-label">Radiology UX Paradox</div>
+            <p>In medical imaging research, 80% of radiologists preferred complex interfaces with overlays and confidence scores, yet their accuracy <strong>improved most with simple text-only output</strong>. <span class="citation" data-source="TripFix_Design_Research.pdf — §5 Trust & Explainability" data-excerpt="In radiology AI research, 80% of radiologists preferred complex interfaces with overlays and confidence scores, yet their diagnostic accuracy improved most with simple text-only AI output. This suggests that visual complexity can distract rather than aid decision-making.">16</span> Lesson for TripFix: test which confidence presentations improve reviewer <em>accuracy</em> rather than assuming more visual detail is better.</p>
+        </div>
+
+        <h3>5.2 Reasoning Trails & Explainability</h3>
+        <p>In legal work, confidence scores alone are insufficient. Professionals need to understand <strong>why</strong> the AI reached a conclusion. In TripFix, every AI reasoning step feeds into the <a href="#claim-history" style="color: var(--accent-light);">Claim History</a> timeline — a single, unified audit trail.</p>
+
+        <h4>Harvey's Paper Trail Design</h4>
+        <p>Harvey AI explicitly designs for auditability: they surface a clear paper trail of thinking steps and citations. Users can backtrack through logic, verify sources, confirm citation accuracy. Design philosophy: <strong>"not a black box."</strong> <span class="citation" data-source="TripFix_HITL_Design_Research_Final.pdf — §5 Trust & Explainability" data-excerpt="Harvey AI explicitly designs for auditability: they surface a clear paper trail of thinking steps and citations. Users can backtrack through logic, verify sources, confirm citation accuracy. Their design philosophy is explicitly 'not a black box.'">18</span></p>
+
+        <h4>Shape of AI: Stream of Thought Pattern</h4>
+        <p>The Shape of AI pattern library documents the "Stream of Thought" pattern: a bounded box showing the AI's logic via three expressions:</p>
+        <ul>
+            <li><strong>Human-readable plans</strong> previewing what the AI will do</li>
+            <li><strong>Execution logs</strong> recording tool calls and results</li>
+            <li><strong>Compact reasoning summaries</strong> capturing decisions</li>
+        </ul>
+
+        <div class="product-card">
+            <div class="product-card-header">
+                <div class="product-card-logo" style="background: linear-gradient(135deg, #f97316, #fb923c); color: white;">S</div>
+                <div>
+                    <div class="product-card-title">Shape of AI — Pattern Library</div>
+                    <div class="product-card-subtitle">The most comprehensive AI UX pattern library</div>
+                </div>
+                <div class="product-card-links">
+                    <a href="https://shapeof.ai" target="_blank">Full Library ↗</a>
+                    <a href="https://shapeof.ai/patterns/stream-of-thought" target="_blank">Stream of Thought ↗</a>
+                    <a href="https://shapeof.ai/pattern-types/governors" target="_blank">Governors ↗</a>
+                </div>
+            </div>
+            <div class="product-card-body">
+                <p>Created by Emily Campbell, Shape of AI catalogs patterns across six categories: <strong>Wayfinders, Inputs, Tuners, Governors</strong> (human oversight), <strong>Trust Builders</strong>, and <strong>Identifiers</strong>. The Governors category is most relevant to TripFix.</p>
+                <p>Products using Stream of Thought include: ChatGPT (thinking tasks), Perplexity (step-by-step sources), Lovable (action/reasoning trace), and V0 (inline logic during code generation).</p>
+                <p>Design considerations: Treat steps as clear states (queued, running, completed, error). Tailor visibility to context complexity. Separate plan/execution/evidence views. Show plans before acting.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-card-header">
+                <div class="product-card-logo" style="background: linear-gradient(135deg, #10b981, #059669); color: white;">A</div>
+                <div>
+                    <div class="product-card-title">Agentic Design Patterns</div>
+                    <div class="product-card-subtitle">Gartner's top technology trend for 2025</div>
+                </div>
+                <div class="product-card-links">
+                    <a href="https://agentic-design.ai/patterns/ui-ux-patterns" target="_blank">All Patterns ↗</a>
+                    <a href="https://agentic-design.ai/patterns/ui-ux-patterns/confidence-visualization-patterns" target="_blank">Confidence Viz ↗</a>
+                </div>
+            </div>
+            <div class="product-card-body">
+                <p>Agentic Design Patterns documents patterns specifically for autonomous AI systems requiring human oversight:</p>
+                <ul>
+                    <li><strong>Mission Control Interfaces:</strong> Real-time agent oversight and intervention</li>
+                    <li><strong>Confidence Visualisation:</strong> Displaying AI certainty levels with calibration data</li>
+                    <li><strong>Mixed-Initiative Controls:</strong> Seamless control switching between human and AI</li>
+                    <li><strong>Progressive Disclosure:</strong> Gradually revealing agent reasoning to prevent cognitive overload</li>
+                    <li><strong>Visual Reasoning Patterns:</strong> Step-by-step workflow transparency with confidence metrics</li>
+                </ul>
+                <p>Best practices for confidence visualization include: consistent color schemes, explaining factors, providing calibration data showing historical accuracy, and showing uncertainty ranges rather than point estimates.</p>
+            </div>
+        </div>
+
+        <h3>5.3 Trust Calibration Over Time</h3>
+        <p>The "Trust Ladder" framework describes systems progressing from Tier 0 (experimental) through higher tiers as they demonstrate reliability. The most effective technique:</p>
+
+        <div class="insight-box">
+            <div class="insight-label">Trust-Building Formula</div>
+            <p><strong>"For EU261 delay claims under 3 hours, the AI has 97% accuracy over the last 6 months"</strong> is far more trust-building than a generic percentage. <span class="citation" data-source="TripFix_Design_Research.pdf — §5 Trust & Explainability" data-excerpt="The 'Trust Ladder' framework describes systems progressing from Tier 0 (experimental) through higher tiers as they demonstrate reliability. Showing the track record — 'for this claim type the AI has X% accuracy over Y months' — is far more trust-building than a generic confidence percentage.">17</span> Show the <em>track record</em>, not just the prediction. TripFix should build a feedback loop dashboard showing AI performance by claim type, complexity, and time period.</p>
+        </div>
+    </div>
+
+    <!-- ═══════ 6. CLAIM HISTORY ═══════ -->
+    <div class="section" id="claim-history">
+        <div class="section-number">Section 6</div>
+        <h2>Claim History — The Single Source of Truth</h2>
+        <p class="section-lead">Evidence, AI reasoning, and human decisions belong in one unified timeline. Claim History is the single place an admin goes to answer: <em>"What happened with this claim, and why?"</em></p>
+
+        <div class="insight-box">
+            <div class="insight-label">Core Design Principle</div>
+            <p><strong>One claim, one timeline.</strong> Rather than splitting evidence, AI reasoning, and audit logs into separate tabs or admin panels, Claim History merges them into a single chronological view. Every event — document uploaded, AI analysis run, human override, system routing decision — appears in one scrollable, searchable, source-linked timeline. <span class="citation" data-source="TripFix_HITL_Design_Research_Final.pdf — §6 Governance & Auditability" data-excerpt="Expose the audit trail as a scrollable timeline in the review interface — not hidden in admin panels. Every human intervention must be logged, every AI decision traceable, every output defensible.">1</span></p>
+        </div>
+
+        <h3>6.1 What Belongs in the Timeline</h3>
+        <p>Claim History unifies three previously siloed views into one:</p>
+
+        <div class="zone-grid">
+            <div class="zone-card" style="border-top: 3px solid var(--blue);">
+                <h4>📎 Evidence</h4>
+                <p>Every document, email, photo, or data point that entered the claim. Timestamped, tagged by source, with inline viewer links.</p>
+            </div>
+            <div class="zone-card" style="border-top: 3px solid var(--accent);">
+                <h4>🤖 AI Reasoning</h4>
+                <p>Each AI analysis run: model version, conclusion, confidence scores, cited evidence, and the full reasoning chain — Harvey's "Paper Trail" approach. <span class="citation" data-source="TripFix_HITL_Design_Research_Final.pdf — §5 Trust & Explainability" data-excerpt="Harvey AI explicitly designs for auditability: they surface a clear paper trail of thinking steps and citations. Users can backtrack through logic, verify sources, confirm citation accuracy. Design philosophy: 'not a black box.'" >2</span></p>
+            </div>
+            <div class="zone-card" style="border-top: 3px solid var(--green);">
+                <h4>👤 Human Actions</h4>
+                <p>Every reviewer action: approvals, edits (with diffs), rejections with reason codes, escalations, comments, and sign-offs — with who, when, and why.</p>
+            </div>
+        </div>
+
+        <h3>6.2 Claim History Timeline — Visual Concept</h3>
+        <p>The timeline presents every event in reverse chronological order. Each entry is typed and colour-coded, with direct links to source artefacts:</p>
+
+        <div class="ch-legend">
+            <div class="ch-legend-item"><div class="ch-legend-dot" style="background: var(--blue);"></div> Evidence</div>
+            <div class="ch-legend-item"><div class="ch-legend-dot" style="background: var(--accent);"></div> AI Reasoning</div>
+            <div class="ch-legend-item"><div class="ch-legend-dot" style="background: var(--green);"></div> Human Action</div>
+            <div class="ch-legend-item"><div class="ch-legend-dot" style="background: var(--yellow);"></div> System Event</div>
+        </div>
+
+        <div class="claim-history-timeline">
+            <div class="ch-event ev-human">
+                <div class="ev-time">14:32</div>
+                <div class="ev-body">
+                    <div class="ev-type">Human — Reviewer Approval</div>
+                    <div class="ev-desc"><strong>J. Martinez</strong> approved final demand letter. Comment: "Compensation amount verified against EU261 schedule." <span class="citation" data-source="TripFix_Design_Research.pdf — §4 Review & Feedback UX" data-excerpt="Adopt a two-state approval model borrowed from code review: Approve means 'I affirm this artefact meets standard.' Request Changes means 'AI output is directionally correct but needs edits before approval.'">3</span></div>
+                </div>
+            </div>
+            <div class="ch-event ev-ai">
+                <div class="ev-time">14:28</div>
+                <div class="ev-body">
+                    <div class="ev-type">AI — Draft Generated</div>
+                    <div class="ev-desc">Demand letter v2 generated. Model: <code style="font-size:12px; color:var(--accent-light);">claims-drafter-v3.1</code>. Confidence: <strong style="color:var(--green);">91%</strong>. Cited 4 evidence items. Reasoning chain: 8 steps visible.</div>
+                </div>
+            </div>
+            <div class="ch-event ev-human">
+                <div class="ev-time">14:15</div>
+                <div class="ev-body">
+                    <div class="ev-type">Human — Edit</div>
+                    <div class="ev-desc"><strong>J. Martinez</strong> corrected passenger count from 2 → 3. Reason: "Third passenger listed on booking confirmation page 2." Diff saved.</div>
+                </div>
+            </div>
+            <div class="ch-event ev-ai">
+                <div class="ev-time">13:42</div>
+                <div class="ev-body">
+                    <div class="ev-type">AI — Eligibility Assessment</div>
+                    <div class="ev-desc">Result: <strong style="color:var(--green);">Eligible</strong> (EU261, delay >3 hrs). Confidence: <strong style="color:var(--green);">94%</strong>. Key factors: flight data confirmed, delay verified via FlightAware API, compensation schedule matched.</div>
+                </div>
+            </div>
+            <div class="ch-event ev-system">
+                <div class="ev-time">13:41</div>
+                <div class="ev-body">
+                    <div class="ev-type">System — Routing Decision</div>
+                    <div class="ev-desc">Claim routed to <strong>Tier 2</strong> review queue. Trigger: compensation >€400 requires human verification per policy <code style="font-size:12px; color:var(--yellow);">P-2024-031</code>. <span class="citation" data-source="TripFix_Design_Research.pdf — §2 Workflow & AI Handoffs" data-excerpt="Confidence must be operationalised as routing policy, not displayed as decoration. Thresholds at two layers: claim-level tier (overall routing) and sub-task-level gates (per extraction field, per legal rule).">4</span></div>
+                </div>
+            </div>
+            <div class="ch-event ev-evidence">
+                <div class="ev-time">13:38</div>
+                <div class="ev-body">
+                    <div class="ev-type">Evidence — Document Received</div>
+                    <div class="ev-desc">Boarding pass uploaded (<code style="font-size:12px;">boarding_pass_martinez.pdf</code>). OCR extracted: Flight AC847, 2026-01-15, YYZ→LHR. Confidence: <strong>97%</strong>.</div>
+                </div>
+            </div>
+            <div class="ch-event ev-evidence">
+                <div class="ev-time">13:35</div>
+                <div class="ev-body">
+                    <div class="ev-type">Evidence — Document Received</div>
+                    <div class="ev-desc">Booking confirmation uploaded (<code style="font-size:12px;">booking_confirm.pdf</code>). OCR extracted: 3 passengers, booking ref XN7842.</div>
+                </div>
+            </div>
+            <div class="ch-event ev-ai">
+                <div class="ev-time">13:35</div>
+                <div class="ev-body">
+                    <div class="ev-type">AI — Processing Started</div>
+                    <div class="ev-desc">Auto-intake initiated. Model: <code style="font-size:12px; color:var(--accent-light);">claims-intake-v2.4</code>. Policy rules loaded: EU261 standard delay claim template.</div>
+                </div>
+            </div>
+            <div class="ch-event ev-system">
+                <div class="ev-time">13:34</div>
+                <div class="ev-body">
+                    <div class="ev-type">System — Claim Created</div>
+                    <div class="ev-desc">New claim <strong>#TF-2026-4829</strong> created via web intake form. Claimant: A. Martinez. Type: Flight delay compensation.</div>
+                </div>
+            </div>
+        </div>
+
+        <h3>6.3 Provenance Data Model</h3>
+        <p>The Claim History timeline is backed by a provenance data model (inspired by W3C PROV: entity/activity/agent <span class="citation" data-source="TripFix_HITL_Design_Research_Final.pdf — §6 Governance & Auditability" data-excerpt="TripFix needs a data model inspired by W3C PROV (entity/activity/agent) that captures: what evidence exists, what the AI produced and cited, what the human reviewed and changed, and what policy drove the routing decision.">5</span>) that structures every event:</p>
+        <ul>
+            <li><strong>CLAIM → EVIDENCE_ITEM:</strong> What evidence exists for this claim</li>
+            <li><strong>CLAIM → AI_RUN → AI_OUTPUT → AI_CITATION:</strong> What the AI produced and cited</li>
+            <li><strong>CLAIM → REVIEW_TASK → REVIEW_ACTION → OUTPUT_VERSION:</strong> What the human reviewed and changed</li>
+            <li><strong>AUDIT_EVENT:</strong> Immutable log entries linking users, actions, timestamps, and artefacts</li>
+            <li><strong>POLICY_RULE → REVIEW_TASK:</strong> What policy drove the routing decision</li>
+        </ul>
+
+        <div class="insight-box">
+            <div class="insight-label">Why This Matters</div>
+            <p>Every event in the Claim History is immutable and timestamped. AI runs record inputs, model version, and policies applied. Human actions record approve/reject/edit decisions with reason codes. This means the Claim History <em>is</em> the audit trail and the compliance record — it's not a separate system or a hidden admin panel. <span class="citation" data-source="TripFix_Design_Research.pdf — §6 Governance & Compliance" data-excerpt="Implement immutable audit events for: AI runs (inputs, model version, policies applied), AI outputs, reviewer actions (approve/reject/edit + reason codes), escalations, and outbound communications.">6</span></p>
+        </div>
+
+        <h3>6.4 Privilege, Redaction & Retention</h3>
+        <ul>
+            <li><strong>Redaction tools:</strong> Expose redaction in the review workflow. E-discovery tools like Relativity provide manual and rule-based redaction with reviewer-friendly markup.</li>
+            <li><strong>Retention controls:</strong> Reviewers need visibility into retention class and sensitivity level.</li>
+            <li><strong>Privilege handling:</strong> Flag potentially privileged communications before they reach outbound artefacts.</li>
+        </ul>
+
+        <div class="product-card">
+            <div class="product-card-header">
+                <div class="product-card-logo" style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: white;">R</div>
+                <div>
+                    <div class="product-card-title">Relativity aiR for Review</div>
+                    <div class="product-card-subtitle">E-discovery with evidence-tethered AI output</div>
+                </div>
+                <div class="product-card-links">
+                    <a href="https://www.relativity.com/data-solutions/air/review/" target="_blank">Website ↗</a>
+                </div>
+            </div>
+            <div class="product-card-body">
+                <p>Relativity aiR demonstrates best-in-class evidence-tethered AI output — the same pattern Claim History should adopt for every AI entry in the timeline:</p>
+                <ul>
+                    <li><strong>aiR Prediction:</strong> Relevance label predicted for each document</li>
+                    <li><strong>aiR Score:</strong> Numerical score indicating relevance strength</li>
+                    <li><strong>aiR Rationale:</strong> Written explanation of the prediction</li>
+                    <li><strong>aiR Considerations:</strong> Counter-arguments identifying assumptions that could change the prediction</li>
+                    <li><strong>aiR Citations:</strong> Up to five excerpts from the document supporting the prediction <span class="citation" data-source="TripFix_HITL_Design_Research_Final.pdf — §5 Trust & Explainability" data-excerpt="Relativity's model of prediction + rationale + considerations + citations is directly portable to claim assessments. Each AI output should include not just the answer, but the reasoning, the supporting evidence, and the potential counter-arguments.">7</span></li>
+                </ul>
+                <div class="insight-box">
+                    <div class="insight-label">Design Takeaway for TripFix</div>
+                    <p>Every AI entry in the Claim History timeline should follow Relativity's pattern: <strong>prediction + rationale + considerations + citations</strong>. This gives reviewers everything they need to verify without leaving the timeline.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════ CROSS-DOMAIN EXEMPLARS ═══════ -->
+    <div class="section" id="exemplars">
+        <div class="section-number">Analysis</div>
+        <h2>Cross-Domain Product Exemplar Comparison</h2>
+        <p class="section-lead">12 production systems mapped across dimensions most relevant to TripFix's design. Use this to identify which products to study for specific interaction patterns.</p>
+
+        <div class="comparison-table-wrapper">
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Exemplar</th>
+                        <th>Industry</th>
+                        <th>Human Role</th>
+                        <th>AI Task</th>
+                        <th>Latency</th>
+                        <th>Key Takeaway for TripFix</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>GitHub PR Reviews</strong></td>
+                        <td>Software</td>
+                        <td>Code reviewer</td>
+                        <td>Workflow + AI review</td>
+                        <td>Async</td>
+                        <td>Permissioned approvals, inline comments, version diffs, two-state approval grammar</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gerrit Code Review</strong></td>
+                        <td>Software</td>
+                        <td>Reviewer</td>
+                        <td>Workflow + versioning</td>
+                        <td>Async</td>
+                        <td>Explicit version/patch set concept; attention set reduces dashboard thrash</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Relativity aiR</strong></td>
+                        <td>Legal e-discovery</td>
+                        <td>Doc reviewer</td>
+                        <td>GenAI review with citations</td>
+                        <td>Async</td>
+                        <td>Evidence-tethered output; defensible review trails</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Everlaw AI</strong></td>
+                        <td>Legal e-discovery</td>
+                        <td>Litigation team</td>
+                        <td>Grounded answers with citations</td>
+                        <td>Async</td>
+                        <td>Direct citations for verification; human validation guidance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>EvenUp</strong></td>
+                        <td>Legal PI claims</td>
+                        <td>Paralegal/attorney</td>
+                        <td>Full lifecycle claims AI</td>
+                        <td>Async</td>
+                        <td>Smart Workflows; Case Companion; lifecycle automation — closest to TripFix</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Harvey AI</strong></td>
+                        <td>Legal (general)</td>
+                        <td>Lawyer</td>
+                        <td>Unified AI workspace</td>
+                        <td>Mixed</td>
+                        <td>Paper trail design; Workflow Builder; unified interface philosophy</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Stripe Radar</strong></td>
+                        <td>Payments/fraud</td>
+                        <td>Fraud analyst</td>
+                        <td>Risk scoring + queue routing</td>
+                        <td>Near-RT</td>
+                        <td>Confidence-based queue routing; risk levels drive review priority</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hive Moderation</strong></td>
+                        <td>Content moderation</td>
+                        <td>Moderator</td>
+                        <td>Auto-mod rules + confidence routing</td>
+                        <td>Near-RT</td>
+                        <td>Confidence threshold triggers; rule-based routing</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HackerOne Code</strong></td>
+                        <td>Cybersecurity</td>
+                        <td>Security expert</td>
+                        <td>AI code review with XAI</td>
+                        <td>Async</td>
+                        <td>Shadowing/memory model; explainable AI artifacts; long-term learning</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zendesk Copilot</strong></td>
+                        <td>Customer support</td>
+                        <td>Agent</td>
+                        <td>GenAI suggested replies</td>
+                        <td>Real-time</td>
+                        <td>Agent-approved actions as safety control; suggestions near content</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Viz.ai</strong></td>
+                        <td>Medical imaging</td>
+                        <td>Radiologist</td>
+                        <td>Flag indications + prioritise</td>
+                        <td>Near-RT</td>
+                        <td>Prioritisation lanes for time-critical items; simple UI beats complex UI</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Labelbox</strong></td>
+                        <td>Data labelling</td>
+                        <td>Reviewer</td>
+                        <td>Multi-step review pipelines</td>
+                        <td>Async</td>
+                        <td>Visual workflow editor; approve/reject with feedback; consensus review</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="insight-box">
+            <div class="insight-label">How to Use This Table</div>
+            <p>Use <strong>code review exemplars</strong> for approvals and diffs. Use <strong>e-discovery tools</strong> for evidence-tethered AI output and redaction. Use <strong>fraud and moderation systems</strong> for confidence-based routing and batch processing. Use <strong>agent-assist systems</strong> for real-time suggestions with human approval gates. Use <strong>medical triage</strong> for prioritisation of time-critical claims.</p>
+        </div>
+    </div>
+
+    <!-- ═══════ KPIs ═══════ -->
+    <div class="section" id="kpis">
+        <div class="section-number">Measurement</div>
+        <h2>KPI Framework</h2>
+        <p class="section-lead">Human-AI UX goals must translate into measurable KPIs aligned with three outcomes: quality & defensibility, human cost per claim, and controlled autonomy.</p>
+
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <h4>Output Quality (Task-Level)</h4>
+                <div class="kpi-desc">Correctness of AI outputs per extraction field, rule, and draft clause</div>
+                <div class="kpi-levers"><strong>UX Levers:</strong> Evidence-tethered suggestions; "insufficient evidence" flags; structured correction UI</div>
+            </div>
+            <div class="kpi-card">
+                <h4>Human Cost per Claim</h4>
+                <div class="kpi-desc">Active reviewer time × labour rate + overhead</div>
+                <div class="kpi-levers"><strong>UX Levers:</strong> Batch review; keyboard microinteractions; bulk accept/undo; templates</div>
+            </div>
+            <div class="kpi-card">
+                <h4>AI Auto-Resolution Rate</h4>
+                <div class="kpi-desc">% of claims resolved without human intervention</div>
+                <div class="kpi-levers"><strong>UX Levers:</strong> Confidence routing; STP pipeline; sampling QC controls</div>
+            </div>
+            <div class="kpi-card">
+                <h4>Confidence Calibration Quality</h4>
+                <div class="kpi-desc">Whether model confidence reflects true correctness</div>
+                <div class="kpi-levers"><strong>UX Levers:</strong> Calibrated confidence display; threshold tuning UI; deferral behaviour</div>
+            </div>
+            <div class="kpi-card">
+                <h4>Correction Rate by Tier</h4>
+                <div class="kpi-desc">How often humans override AI at each confidence level</div>
+                <div class="kpi-levers"><strong>UX Levers:</strong> Confidence indicators; historical accuracy display</div>
+            </div>
+            <div class="kpi-card">
+                <h4>Review Rework Rate</h4>
+                <div class="kpi-desc">% of claims requiring second pass after approval</div>
+                <div class="kpi-levers"><strong>UX Levers:</strong> Strong preflight checks; required fields; version diff</div>
+            </div>
+            <div class="kpi-card">
+                <h4>Auditability Coverage</h4>
+                <div class="kpi-desc">% of decisions with complete provenance</div>
+                <div class="kpi-levers"><strong>UX Levers:</strong> Provenance timeline; immutable audit log; evidence linking</div>
+            </div>
+            <div class="kpi-card">
+                <h4>Time-to-Trust</h4>
+                <div class="kpi-desc">How long new paralegals reach steady-state review patterns</div>
+                <div class="kpi-levers"><strong>UX Levers:</strong> Onboarding flows; calibration exercises; graduated complexity</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════ RESOURCES ═══════ -->
+    <div class="section" id="resources">
+        <div class="section-number">References</div>
+        <h2>Design Pattern Libraries & Resources</h2>
+        <p class="section-lead">Comprehensive resources documenting AI UX patterns directly applicable to TripFix's redesign. These should be ongoing references for the design team.</p>
+
+        <div class="resource-grid">
+            <a href="https://shapeof.ai" target="_blank" class="resource-card">
+                <h4>The Shape of AI</h4>
+                <p>The most comprehensive AI UX pattern library. Six categories including Governors (human oversight), Trust Builders, and Wayfinders.</p>
+                <div class="resource-url">shapeof.ai</div>
+            </a>
+            <a href="https://agentic-design.ai/patterns/ui-ux-patterns" target="_blank" class="resource-card">
+                <h4>Agentic Design Patterns</h4>
+                <p>Mission Control, Confidence Visualisation, Mixed-Initiative Controls, Progressive Disclosure. Gartner's top tech trend 2025.</p>
+                <div class="resource-url">agentic-design.ai</div>
+            </a>
+            <a href="https://pair.withgoogle.com/guidebook" target="_blank" class="resource-card">
+                <h4>Google PAIR Guidebook</h4>
+                <p>Principles and patterns for human-centred AI products. Six chapters covering the full product development flow with case studies.</p>
+                <div class="resource-url">pair.withgoogle.com/guidebook</div>
+            </a>
+            <a href="https://www.microsoft.com/en-us/haxtoolkit" target="_blank" class="resource-card">
+                <h4>Microsoft HAX Toolkit</h4>
+                <p>Evidence-based best practices. Guidelines for Human-AI Interaction: set expectations, support efficient correction, understandable behaviour.</p>
+                <div class="resource-url">microsoft.com/haxtoolkit</div>
+            </a>
+            <a href="https://aiuxpatterns.com" target="_blank" class="resource-card">
+                <h4>AI UX Patterns</h4>
+                <p>Shows how individual patterns compose into complete user experiences. Useful for seeing how patterns combine into workflows.</p>
+                <div class="resource-url">aiuxpatterns.com</div>
+            </a>
+            <a href="https://www.nist.gov/publications/four-principles-explainable-artificial-intelligence" target="_blank" class="resource-card">
+                <h4>NIST Explainable AI Principles</h4>
+                <p>Four principles: provide explanations, ensure they're meaningful, ensure accuracy, communicate knowledge limits.</p>
+                <div class="resource-url">NIST IR 8312</div>
+            </a>
+            <a href="https://www.w3.org/TR/prov-dm/" target="_blank" class="resource-card">
+                <h4>W3C PROV Data Model</h4>
+                <p>Standard conceptual grounding for "who/what/when produced this artefact." Maps directly to audit and traceability requirements.</p>
+                <div class="resource-url">w3.org/TR/prov-dm</div>
+            </a>
+            <a href="https://uxmag.com/articles/secrets-of-agentic-ux" target="_blank" class="resource-card">
+                <h4>UX for AI (Greg Nudelman)</h4>
+                <p>Framework around AI's four core capabilities: perception, reasoning, memory, and agency. Directly relevant to TripFix's agent-driven workflow.</p>
+                <div class="resource-url">Wiley, 2025 / UX Magazine</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- ═══════ ROADMAP ═══════ -->
+    <div class="section" id="roadmap">
+        <div class="section-number">Next Steps</div>
+        <h2>Implementation Roadmap</h2>
+        <p class="section-lead">Immediate design priorities and an illustrative timeline assuming a start in late February 2026.</p>
+
+        <h3>Immediate Design Priorities</h3>
+        <ol>
+            <li><strong>Task decomposition workshop:</strong> Enumerate every claim sub-task AI will output. Map each to evidence sources and risk tiers. Define evidence-tethered vs. assistive only.</li>
+            <li><strong>Define autonomy tiers:</strong> Map every claim type and processing step to Tier 1/2/3. This taxonomy drives every other UX decision.</li>
+            <li><strong>Design the review triad:</strong> Build a prototype of the three-pane workbench. Test with paralegals using real claim data.</li>
+            <li><strong>Implement confidence scoring:</strong> Start with three-tier model. Show historical accuracy alongside confidence. Test which presentations improve reviewer accuracy.</li>
+            <li><strong>Instrument from day one:</strong> Implement the provenance model early. Retrofitting compromises defensibility.</li>
+        </ol>
+
+        <h3>Prototype Approach</h3>
+        <p>Design two prototypes in parallel:</p>
+        <ul>
+            <li><strong>Prototype A:</strong> Asynchronous queue-first workbench with batch processing (recommended default for legal review)</li>
+            <li><strong>Prototype B:</strong> Real-time AI assist inside drafting for outbound communications</li>
+        </ul>
+        <p>Compare via time-per-claim and error outcomes with gold-set review studies.</p>
+
+        <h3>Illustrative Timeline</h3>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div>
+                    <div class="timeline-date">Weeks 1–3 — Discovery</div>
+                    <h4>Baseline & Definitions</h4>
+                    <p>Baseline workflow mapping, KPI definitions, evidence taxonomy, policy trigger catalogue.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div>
+                    <div class="timeline-date">Weeks 4–7 — Prototype</div>
+                    <h4>Review Workbench Prototype</h4>
+                    <p>Low-fi review workbench prototype (queue + triad layout). Usability tests with paralegals and senior auditors.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div>
+                    <div class="timeline-date">Weeks 8–14 — Pilot</div>
+                    <h4>Instrumentation & Limited Pilot</h4>
+                    <p>Event model + dashboards. Limited pilot on one claim segment or risk tier.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div>
+                    <div class="timeline-date">Weeks 15–24 — Scale</div>
+                    <h4>Confidence Routing & Compliance</h4>
+                    <p>Confidence routing + sampling QC. Compliance hardening (retention, redaction, audit). Expand to additional claim types.</p>
+                </div>
+            </div>
+        </div>
+
+        <h3>Products to Study in Depth</h3>
+        <div class="resource-grid">
+            <a href="https://www.evenuplaw.com" target="_blank" class="resource-card">
+                <h4>EvenUp</h4>
+                <p>Closest competitor. Smart Workflows, Case Companion, AI Playbooks, lifecycle automation.</p>
+                <div class="resource-url">evenuplaw.com</div>
+            </a>
+            <a href="https://www.harvey.ai" target="_blank" class="resource-card">
+                <h4>Harvey AI</h4>
+                <p>Unified interface, Vault document review, Workflow Builder, design philosophy.</p>
+                <div class="resource-url">harvey.ai</div>
+            </a>
+            <a href="https://github.com/features/copilot" target="_blank" class="resource-card">
+                <h4>GitHub Copilot</h4>
+                <p>Mission Control, code review UX with confidence scores, feedback architecture.</p>
+                <div class="resource-url">github.com/features/copilot</div>
+            </a>
+            <a href="https://labelbox.com" target="_blank" class="resource-card">
+                <h4>Labelbox</h4>
+                <p>Visual workflow editor, multi-step review pipelines, quality metrics, AutoQA.</p>
+                <div class="resource-url">labelbox.com</div>
+            </a>
+            <a href="https://www.relativity.com/data-solutions/air/review/" target="_blank" class="resource-card">
+                <h4>Relativity / Everlaw</h4>
+                <p>E-discovery review with citations, redaction tools, defensible review trails.</p>
+                <div class="resource-url">relativity.com</div>
+            </a>
+            <a href="https://claraanalytics.com" target="_blank" class="resource-card">
+                <h4>CLARA Analytics</h4>
+                <p>Alert-based triage, claims dashboards, performance monitoring for insurance.</p>
+                <div class="resource-url">claraanalytics.com</div>
+            </a>
+        </div>
+
+        <div class="insight-box" style="margin-top: 32px;">
+            <div class="insight-label">Govern the Feedback Loop</div>
+            <p>Define which reviewer feedback becomes training data, what approvals are required, and how changes are documented. This avoids uncontrolled drift and supports defensible change management. Model cards and datasheets-style internal documentation should accompany every model update.</p>
+        </div>
+    </div>
+
+    <!-- ═══════ FOOTER ═══════ -->
+    <div style="border-top: 1px solid var(--border); padding-top: 32px; margin-top: 48px;">
+        <p style="font-size: 13px; color: var(--text-dim);">
+            This interactive report was synthesised from two independent design research analyses prepared for the TripFix team, February 2026.
+            All product references are for design inspiration. Links and product details were verified as of February 2026.
+        </p>
+        <p style="font-size: 12px; color: var(--text-dim); margin-top: 8px;">
+            <strong>Source documents:</strong> TripFix_Design_Research.pdf (14 pages) · TripFix_HITL_Design_Research_Final.pdf (16 pages)
+        </p>
+    </div>
+
+</main>
+
+<!-- Citation Popup -->
+<div class="citation-popup" id="citationPopup">
+    <div class="citation-popup-body" id="citationText"></div>
+    <div class="citation-popup-source" id="citationSource"></div>
+</div>
+
+<script>
+    // ─── Scroll Progress ───
+    window.addEventListener('scroll', () => {
+        const h = document.documentElement;
+        const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+        document.getElementById('progressBar').style.width = pct + '%';
+    });
+
+    // ─── Active Nav ───
+    const sections = document.querySelectorAll('.section, .hero');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.id;
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+                });
+            }
+        });
+    }, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+
+    sections.forEach(s => observer.observe(s));
+
+    // ─── Collapsible Sections ───
+    document.querySelectorAll('.collapsible-trigger').forEach(trigger => {
+        trigger.addEventListener('click', () => {
+            trigger.classList.toggle('open');
+            const content = trigger.nextElementSibling;
+            content.classList.toggle('open');
+        });
+    });
+
+
+    // ─── Smooth nav click ───
+    navLinks.forEach(link => {
+        link.addEventListener('click', e => {
+            if (window.innerWidth <= 1024) return;
+        });
+    });
+
+    // ─── Citation Popups (NotebookLM-style) ───
+    const citPopup = document.getElementById('citationPopup');
+    const citText = document.getElementById('citationText');
+    const citSource = document.getElementById('citationSource');
+    let citHideTimer = null;
+
+    function showCitation(cite) {
+        clearTimeout(citHideTimer);
+        const excerpt = cite.getAttribute('data-excerpt');
+        const source = cite.getAttribute('data-source');
+        citText.textContent = excerpt;
+        citSource.textContent = source;
+
+        citPopup.classList.add('visible');
+
+        const rect = cite.getBoundingClientRect();
+        const pw = 400;
+
+        let left = rect.left + rect.width / 2 - pw / 2;
+        if (left < 12) left = 12;
+        if (left + pw > window.innerWidth - 12) left = window.innerWidth - pw - 12;
+
+        citPopup.style.left = left + 'px';
+        citPopup.style.top = (rect.bottom + 8) + 'px';
+
+        requestAnimationFrame(() => {
+            const pr = citPopup.getBoundingClientRect();
+            if (pr.bottom > window.innerHeight - 12) {
+                citPopup.style.top = (rect.top - pr.height - 8) + 'px';
+            }
+        });
+    }
+
+    function scheduleCitHide() {
+        citHideTimer = setTimeout(() => citPopup.classList.remove('visible'), 180);
+    }
+
+    document.querySelectorAll('.citation').forEach(cite => {
+        cite.addEventListener('mouseenter', () => showCitation(cite));
+        cite.addEventListener('mouseleave', scheduleCitHide);
+        cite.addEventListener('focus', () => showCitation(cite));
+        cite.addEventListener('blur', scheduleCitHide);
+    });
+
+    citPopup.addEventListener('mouseenter', () => clearTimeout(citHideTimer));
+    citPopup.addEventListener('mouseleave', () => {
+        citPopup.classList.remove('visible');
+    });
+</script>
+
+</body>
+</html>

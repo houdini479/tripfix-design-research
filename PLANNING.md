@@ -1,14 +1,18 @@
-# TripFix Design Research — Interactive Report
+# TripFix Design Research & UX Prototype
 
 ## Project Overview
-Interactive web presentation of TripFix's Human-in-the-Loop AI UX design research. Combines two independent research reports into a single, navigable web experience with embedded product examples (videos, images, links).
+Landing page with two experiences: (1) comprehensive interactive design research report and (2) UX prototype of the TripFix claims review workbench. Combines two independent research reports with an interactive mockup of the proposed interface.
 
 ## Architecture
-- **Single-page HTML application** (`index.html`) — fully self-contained
-- No build tools, frameworks, or dependencies required
+- **Multi-page static site** served by `npx serve`
+- `index.html` — Landing page (choose Research or Prototype)
+- `research.html` — Full design research report (self-contained HTML)
+- `prototype.html` + `prototype-styles.css` + `prototype-app.js` — UX prototype
+- No build tools or frameworks required
 - Google Fonts loaded via CDN (Inter, JetBrains Mono)
-- YouTube videos embedded via iframe
+- YouTube videos embedded via iframe (research report)
 - Product images loaded from source websites with fallback handling
+- Railway deployment via `railway.json` + `package.json`
 
 ## Design Decisions
 - **Dark theme**: Professional, modern look suitable for team presentations
