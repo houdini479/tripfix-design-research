@@ -2,6 +2,12 @@
 
 ## Completed Tasks
 
+### 2026-02-22 — Railway Landing Page Navigation Fix
+- [x] Investigate non-responsive landing page card navigation on Railway deployment
+- [x] Confirm `research.html` and `prototype.html` exist and are linked correctly
+- [x] Update static server commands to non-SPA mode for multi-page navigation (`serve .` instead of `serve -s .`)
+- [x] Update README quick-start command to match deployment mode
+
 ### 2026-02-17 — Create Interactive Web Report
 - [x] Read and analyze both research PDF reports
 - [x] Identify all referenced products, design patterns, and resources

@@ -5,7 +5,7 @@ Landing page with two experiences: comprehensive design research report and an i
 ## Quick Start (Local)
 
 ```bash
-npx serve -s . -l 8080
+npx serve . -l 8080
 ```
 
 Then open [http://localhost:8080](http://localhost:8080)
